@@ -1,0 +1,279 @@
+/* Reset basique */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family:Arial, sans-serif;
+}
+
+/* Fond global */
+html, body, .page-container {
+    background-color: #000;
+    user-select: none;
+}
+
+/* Header */
+.header {
+    height: 90px;
+    min-height: 90px;
+    max-height: 90px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #000;
+    color: darkorange;
+}
+
+/* Zones gauche / centre / droite */
+.header .left,
+.header .center,
+.header .right {
+    display: flex;
+    align-items: center;
+}
+
+/* Barre de recherche centrée */
+.header .center {
+    flex: 1;
+    justify-content: center;
+}
+
+.header .logo {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.header .search-bar {
+    display: flex;
+    align-items: center;
+    height: 60px;
+    padding: 0 5px;
+    border-radius: 10px;
+    gap: 5px;
+}
+
+.header .search-bar input {
+    width: 300px;
+    transition: width 0.3s;
+    height: 75%;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+}
+
+.header .search-bar input:focus {
+    background-color: rgba(51, 51, 51, 0.65);
+    width: 390px;
+}
+
+.header .search-bar button {
+    height: 75%;
+    padding: 0 15px;
+    border-radius: 6px;
+    background-color: darkorange;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s, background-color 0.2s;
+
+}
+
+.header .search-bar button:active {
+    transform: scale(1.05); /* bouton légèrement plus grand au clic */
+}
+
+.header .search-bar button:hover {
+    background-color: #e07b00;
+    color: #fff;
+}
+
+/* Boutons à droite */
+.header .right {
+    gap: 15px; /* espace entre tous les boutons */
+}
+
+.header .right button{
+    all: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.header .right button.export,
+.header .right button.import,
+.header .right button.create_folder,
+.header .right button.delete{
+ background-color: black;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+
+}
+
+.header .right button img{
+    max-width: 30px;
+    max-height: 30px;
+    width: auto;
+    height: auto;
+}
+
+.header .right button.export:hover,
+.header .right button.import:hover,
+.header .right button.create_folder:hover,
+.header .right button.delete:hover{
+    cursor: pointer;
+    background-color: rgba(73, 62, 50, 0.55);
+
+}
+
+
+
+
+
+.header .right button.profil,
+.header .right button.logout{
+    height: 45px;
+    padding: 0 15px;
+    border-radius: 6px;
+    background-color: darkorange;
+    border: none;
+    cursor: pointer;
+    font-size: 1.15rem;
+    transition: background-color 0.2s;
+    color: #000;
+}
+
+.header .right button.profil:hover,
+.header .right button.logout:hover{
+    background-color: #e07b00;
+    color: #fff;
+}
+
+.header .right button:active {
+    transform: scale(1.05); /* bouton légèrement plus grand au clic */
+}
+
+/* Conteneur principal */
+.page-container {
+    display: flex;
+    height: calc(100vh - 90px);
+}
+
+/* Sidebar */
+.sidebar {
+    width: 230px;
+    min-width: 230px;
+    max-width: 230px;
+    padding: 20px;
+    background-color: #000;
+    height: 100%;
+}
+
+.sidebar h3 {
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.sidebar ul {
+    list-style: none;
+    margin-bottom: 25px;
+}
+
+.sidebar li {
+    margin-bottom: 8px;
+}
+
+/* Checkbox cachée */
+.filter {
+    display: none;
+}
+
+/* Boutons de filtre */
+.sidebar label {
+    display: block;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: darkorange;
+    color: black;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 1.15rem;
+    transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+label:active {
+    transform: scale(1.05); /* grossit légèrement au clic */
+}
+
+.filter:checked + label {
+    background-color: darkorange;
+    color: white;
+}
+
+.filter:checked + label:hover {
+    background-color: #d6790a;
+    color: black;
+}
+
+.sidebar label:hover {
+    background-color: #d6790a;
+    color: white;
+}
+
+/* Main content */
+.main-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 90px);
+    grid-auto-rows: 120px;
+    gap: 20px;
+    padding: 20px;
+    box-shadow: 0 0 0 5px #000;
+    background-color: #000;
+    border-top-left-radius: 10px;
+    background-image: url('../ressources/bkg.jpg');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+.folder-icon, .file-icon {
+    background-color: rgba(73, 62, 50, 0.55);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.2s;
+}
+
+.folder-icon:hover, .file-icon:hover {
+    background-color: rgba(147, 136, 122, 0.62);
+}
+
+.folder-icon.ctrl, .file-icon.ctrl {
+    background-color: rgba(147, 136, 122, 0.62);
+}
+
+.folder-icon.show, .file-icon.show {
+   background-color: rgba(251, 7, 7, 0.55);
+}
+
+.folder-icon img, .file-icon img {
+    max-width: 75px;
+    max-height: 75px;
+    width: auto;
+    height: auto;
+}
+
+.folder-icon .name, .file-icon .name {
+    font-size: 0.8rem;
+    word-break: break-word;
+    margin-top: 5px;
+}
