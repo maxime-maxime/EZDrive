@@ -5,11 +5,8 @@ require '../Controllers/DocumentController.php';
 require '../Config/config.php';
 global $rootPath;
 
-$err = [
-    '/', '\\', '.', '+', '-', '*', '(', ')', '?', '[', ']', '{', '}', ':', ';', '!', ',', ' ',
-    '@', '#', '$', '%', '^', '&', '_', '`', '~', '|',
-    "\n", "\t", "\r", "\f", "\v", "\0"
-];
+$err = ['/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', "\0", "\n", "\r"];
+
 $name = $_GET['name'] ?? 'coucou';
 if (isset($_GET['parentId']) && $_GET['parentId'] === 'root') {
     $parentId = FolderController::getRoot()['id'];

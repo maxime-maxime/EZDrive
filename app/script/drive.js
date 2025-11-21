@@ -1,8 +1,10 @@
 let ctrl = false; // Ctrl press
 let a = false;    // 'a' press
+let q = false;    // 'w' press
 
 // Créer input file unique pour upload
 const fileInput = document.createElement('input');
+const contentPath = '../../bdd/content/';
 fileInput.type = 'file';
 fileInput.multiple = true;
 
@@ -69,22 +71,42 @@ function logout() {
 
 // Ctrl + A gestion
 document.addEventListener('keydown', e => {
-    if (e.key === 'Control') {
+    const key = e.key.toLowerCase();
+
+    if (key === 'control') {
         ctrl = true;
-        document.querySelectorAll('.file-icon, .folder-icon').forEach(i => i.classList.add('ctrl'));
-    } else if (e.key.toLowerCase() === 'a') a = true;
+        document.querySelectorAll('.file-icon, .folder-icon')
+            .forEach(i => i.classList.add('ctrl'));
+    } else if (key === 'a') {
+        a = true;
+    } else if (key === 'q') {
+        q = true;
+    }
 
-
-    if (ctrl && a) document.querySelectorAll('.file-icon, .folder-icon').forEach(i => i.classList.add('show'));
+    if (ctrl && q) {
+        document.querySelector('.download').click();
+        ctrl = false;
+        document.querySelectorAll('.file-icon, .folder-icon')
+            .forEach(i => i.classList.remove('ctrl'));
+        q = false;}
+    if (ctrl && a)
+        document.querySelectorAll('.file-icon, .folder-icon')
+            .forEach(i => i.classList.add('show'));
 });
 
 document.addEventListener('keyup', e => {
-    if (e.key === 'Control') {
+    const key = e.key.toLowerCase();
+
+    if (key === 'control') {
         ctrl = false;
-        document.querySelectorAll('.file-icon, .folder-icon').forEach(i => i.classList.remove('ctrl'));
-    } else if (e.key.toLowerCase() === 'a') a = false;
-    else if (e.key.toLowerCase() === 'supr' || e.key.toLowerCase() === 'delete')
-    {document.querySelector('.delete').click();
+        document.querySelectorAll('.file-icon, .folder-icon')
+            .forEach(i => i.classList.remove('ctrl'));
+    } else if (key === 'a') {
+        a = false;
+    } else if (key === 'q') {
+        q = false;
+    } else if (key === 'delete' || key === 'supr') {
+        document.querySelector('.delete').click();
     }
 });
 
@@ -103,7 +125,7 @@ document.body.addEventListener('click', e => {
 });
 
 // Export des fichiers sélectionnés
-document.querySelector('.export').addEventListener('click', () => {
+document.querySelector('.download').addEventListener('click', () => {
     const icons = document.querySelectorAll('.file-icon.show, .folder-icon.show');
     const folders = [], files = [];
     icons.forEach(i => {
@@ -116,9 +138,11 @@ document.querySelector('.export').addEventListener('click', () => {
     fetch(url)
         .then(res => res.json())
         .then(files => {
+            console.log(files);
             files.forEach(path => {
+                console.log(contentPath +  path);
                 const a = document.createElement('a');
-                a.href = path;
+                a.href = contentPath + path;
                 a.download = '';
                 document.body.appendChild(a);
                 a.click();
@@ -150,7 +174,7 @@ document.querySelector('.delete').addEventListener('click', () => {
 
 
 // Upload
-document.querySelector('.search').addEventListener('click', () => fileInput.click());
+document.querySelector('.upload').addEventListener('click', () => fileInput.click());
 
 fileInput.addEventListener('change', () => {
     const folderId = window.location.search.split("=")[1];

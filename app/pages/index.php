@@ -44,8 +44,8 @@ else {
     <div class="right user-actions">
         <button class="delete"><img src="../ressources/delete.png" alt="Supprimer" /></button>
         <button class="create_folder"><img src="../ressources/create_folder.png" alt="Créer" /></button>
-        <button class="import"><img src="../ressources/download.png" alt="Importer" /></button>
-        <button class="export"><img src="../ressources/upload.png" alt="Exporter" /></button>
+        <button class="upload"><img src="../ressources/download.png" alt="Importer" /></button>
+        <button class="download"><img src="../ressources/upload.png" alt="Exporter" /></button>
         <button class="profil">Profil</button>
         <button class="logout">Déconnexion</button>
     </div>

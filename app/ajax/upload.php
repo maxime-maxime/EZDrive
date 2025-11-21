@@ -7,55 +7,74 @@ require '../Config/config.php';
 global $rootPath;
 
 $data = json_decode(file_get_contents('php://input'), true);
-if(isset($data['folderId']) && $data['folderId'] === 'root'){
-    $folderId = FolderController::getRoot()['id'];}
-else{$folderId = isset($data['folderId']) ? (int)$data['folderId'] : null;}
-echo 'folderId : '.$folderId;
-$files = $data['files'] ?? null;
 
+// Récupération du folderId
+if (isset($data['folderId']) && $data['folderId'] === 'root') {
+    $folderId = FolderController::getRoot()['id'];
+} else {
+    $folderId = isset($data['folderId']) ? (int)$data['folderId'] : null;
+}
 
-$path=[];
+// Fichiers reçus
+$files = $data['files'] ?? [];
 
+// Construction du chemin
+$path = [];
 $folder = $folderId;
-do{
+do {
     $currentFolder = FolderController::getById($folder)[0];
     $path[] = $currentFolder['name'];
-    $folder = FolderController::getById($currentFolder['id'])[0]['parent_id'];
-} while($folder !== null);
+    $folder = $currentFolder['parent_id'];
+} while ($folder !== null);
 
+// Exclusion du dernier dossier et inversion
 $pathWithoutLast = array_reverse(array_slice($path, 0, -1));
-$pathString = implode('/', $pathWithoutLast);
+$pathString = !empty($pathWithoutLast) ? implode('/', $pathWithoutLast) : '';
+// Liste des noms existants
+$err = ['/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', "\0", "\n", "\r"];
 
+$existingName = array_column(DocumentController::listTuplesToPrint(folderId: $folderId), 'name');
 
-$existingName = array_column(DocumentController::listTuplesToPrint(folderId : $folderId), 'name');
-echo 'existing names : ';
-foreach($files as $file) {
-    $newName = pathinfo($file['name'], PATHINFO_FILENAME);
+foreach ($files as $file) {
+    $baseName = pathinfo($file['name'], PATHINFO_FILENAME);
     $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-    if (in_array($file['name'], $existingName)) {
-        $i = 1;
-        $newName = $file['name'] . ' (' . $i . ')';
-        $i++;
-        while (in_array($newName, $existingName)) {
-            $newName = $file['name'] . ' (' . $i . ')';
-            $i++;
-        }}
-        $newName = $newName.'.'.$ext;
-        echo 'name : '.$newName;
-        $document['name'] = $newName;
-        $document['path'] = $pathString . '/' . $newName;
-        $document['folder_id'] = $folderId;
-        $document['type'] = $extToType[$file['extension']] ?? 'document';
-        $document['size'] = $file['size'];
-        $document['preview'] = $typeToPreview[$document['type']] ?? 'file.png';
-        $document['owner'] = $_SESSION['user']['user_id'];
-        if ($file['content']!= null){
-        DocumentController::insert($document);
-        $path =$rootPath.'/'.$document['path'];
-        echo 'path : '.$path;
-        $path = str_replace(["\\", "//"], ["/", "/"], $path);
-            if (!file_exists($path)) {
-            file_put_contents($path, $file['content']);
 
-        echo $path;
-        }}}
+    // Vérifier les caractères interdits
+    if (strpbrk($baseName, implode('', $err)) !== false) {
+        continue; // ignorer ce fichier
+    }
+
+    $newName = $baseName;
+    $i = 1;
+
+    // Gestion des doublons
+    print_r($existingName);
+    echo $newName . '.' . $ext;
+    while (in_array($newName . '.' . $ext, $existingName)) {
+        $newName = $baseName . ' (' . $i . ')';
+        $i++;
+    }
+    $newName .= '.' . $ext;
+    $existingName[] = $newName; // mettre à jour pour les prochains fichiers
+
+    $document = [
+        'name' => $newName,
+        'path' => ($pathString !== '' ? $pathString . '/' : '') . $newName,
+        'folder_id' => $folderId,
+        'type' => $extToType[$ext] ?? 'document',
+        'size' => $file['size'],
+        'preview' => $typeToPreview[$extToType[$ext] ?? 'document'] ?? 'file.png',
+        'owner' => $_SESSION['user']['user_id']
+    ];
+
+    if (!empty($file['content'])) {
+        DocumentController::insert($document);
+
+        $path = $rootPath . '/' . $document['path'];
+        $path = str_replace(["\\", "//"], ["/", "/"], $path);
+
+        if (!file_exists($path)) {
+            $base64 = preg_replace('#^data:.*;base64,#', '', $file['content']);
+            file_put_contents($path, base64_decode($base64));        }
+    }
+}

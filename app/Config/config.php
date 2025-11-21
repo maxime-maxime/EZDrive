@@ -40,4 +40,4 @@ $typeToPreview = [
     'pdf' => 'file.png',
 ];
 
-$rootPath = 'C:\wamp64\www\Drive\bdd\content';
+$rootPath = 'C:\wamp64\www\EZDrive\bdd\content';

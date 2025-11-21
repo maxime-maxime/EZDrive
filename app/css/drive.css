@@ -8,20 +8,24 @@
 
 /* Fond global */
 html, body, .page-container {
-    background-color: #000;
+    background-color: #000000;
     user-select: none;
 }
 
 /* Header */
 .header {
-    height: 90px;
-    min-height: 90px;
-    max-height: 90px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    min-height: 80px;
     display: flex;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #000;
+    padding: 10px 25px;
+    background-color: black;
     color: darkorange;
+    border-bottom: 6px solid darkorange;
 }
 
 /* Zones gauche / centre / droite */
@@ -76,11 +80,10 @@ html, body, .page-container {
     border: none;
     cursor: pointer;
     transition: transform 0.1s, background-color 0.2s;
-
 }
 
 .header .search-bar button:active {
-    transform: scale(1.05); /* bouton légèrement plus grand au clic */
+    transform: scale(1.05);
 }
 
 .header .search-bar button:hover {
@@ -90,10 +93,10 @@ html, body, .page-container {
 
 /* Boutons à droite */
 .header .right {
-    gap: 15px; /* espace entre tous les boutons */
+    gap: 15px;
 }
 
-.header .right button{
+.header .right button {
     all: unset;
     display: flex;
     align-items: center;
@@ -101,80 +104,75 @@ html, body, .page-container {
     border-radius: 6px;
 }
 
-.header .right button.export,
-.header .right button.import,
+.header .right button.upload,
+.header .right button.download,
 .header .right button.create_folder,
-.header .right button.delete{
- background-color: black;
+.header .right button.delete {
+    background-color: black;
     width: 45px;
     height: 45px;
     cursor: pointer;
-
 }
 
-.header .right button img{
+.header .right button img {
     max-width: 30px;
     max-height: 30px;
-    width: auto;
-    height: auto;
 }
 
-.header .right button.export:hover,
-.header .right button.import:hover,
+.header .right button.download:hover,
+.header .right button.upload:hover,
 .header .right button.create_folder:hover,
-.header .right button.delete:hover{
-    cursor: pointer;
-    background-color: rgba(73, 62, 50, 0.55);
-
+.header .right button.delete:hover {
+    background-color: rgba(255,255,255,0.08);
 }
 
-
-
-
-
+/* Boutons orange */
 .header .right button.profil,
-.header .right button.logout{
+.header .right button.logout {
     height: 45px;
     padding: 0 15px;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: darkorange;
-    border: none;
     cursor: pointer;
     font-size: 1.15rem;
     transition: background-color 0.2s;
-    color: #000;
+    color: black;
 }
 
 .header .right button.profil:hover,
-.header .right button.logout:hover{
-    background-color: #e07b00;
+.header .right button.logout:hover {
+    background-color: #c96a00;
     color: #fff;
 }
 
 .header .right button:active {
-    transform: scale(1.05); /* bouton légèrement plus grand au clic */
+    transform: scale(1.05);
 }
 
 /* Conteneur principal */
 .page-container {
     display: flex;
-    height: calc(100vh - 90px);
+    height: calc(100vh - 80px);
 }
 
 /* Sidebar */
 .sidebar {
-    width: 230px;
-    min-width: 230px;
-    max-width: 230px;
+    position: fixed;
+    width: 250px;
     padding: 20px;
-    background-color: #000;
+    background-color: black;
     height: 100%;
+    top: 80px;     /* hauteur du header */
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
 }
 
 .sidebar h3 {
     margin-bottom: 12px;
     font-size: 1.25rem;
-    color: white;
+    color: #ffffff;
+    letter-spacing: 1px;
 }
 
 .sidebar ul {
@@ -204,8 +202,9 @@ html, body, .page-container {
     font-size: 1.15rem;
     transition: background-color 0.2s, color 0.2s, transform 0.2s;
 }
+
 label:active {
-    transform: scale(1.05); /* grossit légèrement au clic */
+    transform: scale(1.05);
 }
 
 .filter:checked + label {
@@ -229,20 +228,24 @@ label:active {
     display: grid;
     grid-template-columns: repeat(auto-fit, 90px);
     grid-auto-rows: 120px;
-    gap: 20px;
-    padding: 20px;
-    box-shadow: 0 0 0 5px #000;
-    background-color: #000;
-    border-top-left-radius: 10px;
+    gap: 22px;
+    padding: 25px;
     background-image: url('../ressources/bkg.jpg');
     background-size: cover;
     background-position: center;
-    overflow: hidden;
+    border-top-left-radius: 10px;
+    margin-top: 80px;      /* place pour le header */
+    margin-left: 250px;    /* place pour la sidebar */
+    height: calc(100vh - 80px);
+    overflow-x: hidden;
+    overflow-y: auto;      /* permet de scroller */
 }
 
+/* Icônes */
 .folder-icon, .file-icon {
-    background-color: rgba(73, 62, 50, 0.55);
-    border-radius: 15px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+    background-color: rgba(147, 136, 122, 0.29);
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -250,26 +253,24 @@ label:active {
     color: white;
     width: 100%;
     height: 100%;
-    transition: background-color 0.2s;
+    transition: background-color 0.25s, box-shadow 0.25s;
 }
 
 .folder-icon:hover, .file-icon:hover {
-    background-color: rgba(147, 136, 122, 0.62);
-}
+    background-color: rgba(147, 136, 122, 0.74); }
+
 
 .folder-icon.ctrl, .file-icon.ctrl {
-    background-color: rgba(147, 136, 122, 0.62);
-}
+    background-color: rgba(147, 136, 122, 0.74); }
 
 .folder-icon.show, .file-icon.show {
-   background-color: rgba(251, 7, 7, 0.55);
+    background-color: rgba(251, 7, 7, 0.55);
+    box-shadow: 0 0 6px rgb(0, 0, 0);
 }
 
 .folder-icon img, .file-icon img {
     max-width: 75px;
     max-height: 75px;
-    width: auto;
-    height: auto;
 }
 
 .folder-icon .name, .file-icon .name {
