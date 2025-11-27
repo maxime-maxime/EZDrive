@@ -128,4 +128,14 @@ class Folder
         return $root ?: null;
     }
 
+    public static function getByPath(string $path): array {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM folder WHERE path = :path AND owner = :owner");
+        $stmt->execute([
+            ":path" => $path,
+            ":owner" => $_SESSION['user']['user_id']
+        ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 }

@@ -22,8 +22,8 @@ else {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Drive</title>
-    <link rel="stylesheet" href="../css/drive.css">
-    <link rel="stylesheet" href="../css/drive.css">
+    <link rel="stylesheet" href="../css/default.css" id="themeLink">
+    <link rel="preload" as="image" href="../ressources/pointinghand_eighty.cur">
     <script src="../script/drive.js" defer></script>
     <link
 </head>
@@ -31,7 +31,7 @@ else {
 <!-- Header -->
 <header class="header">
     <div class="left">
-        <div class="logo">PornDrive</div>
+        <div class="logo">EZDrive</div>
     </div>
 
     <div class="center">
@@ -42,9 +42,9 @@ else {
     </div>
 
     <div class="right user-actions">
-        <button class="delete"><img src="../ressources/delete.png" alt="Supprimer" /></button>
+        <button class="delete"><img src="../ressources/delete_eighty.png" alt="Supprimer" /></button>
         <button class="create_folder"><img src="../ressources/create_folder.png" alt="Créer" /></button>
-        <button class="upload"><img src="../ressources/download.png" alt="Importer" /></button>
+        <button class="upload"><img src="../ressources/download_eighty.png" alt="Importer" /></button>
         <button class="download"><img src="../ressources/upload.png" alt="Exporter" /></button>
         <button class="profil">Profil</button>
         <button class="logout">Déconnexion</button>
@@ -100,5 +100,17 @@ else {
     </main>
 
 </div>
+<div class="popup">
+    <div class="popup-header">
+        Are you over 18 ?
+        <button class="close-btn">X</button>
+    </div>
+    <div class="popup-content">
+        <p>Contenu de la fenêtre ici</p>
+        <button class="btn1">Yes</button>
+        <button class ='btn2'>No</button>
+    </div>
+</div>
+
 </body>
 </html>

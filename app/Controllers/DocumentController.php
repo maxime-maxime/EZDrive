@@ -1,5 +1,6 @@
 <?php
 require '../Models/Document.php';
+
 class DocumentController
 {
     public static function updateRow(array $tuple, int $id): void
@@ -12,6 +13,10 @@ class DocumentController
         Document::deleteRows($id);
     }
 
+    public static function getByPath(string $path): array
+    {
+        return Document::getByPath($path);
+    }
     public static function uploadFile(array $files, $path): string
     {
         return Document::uploadFile($files, $path);
@@ -41,5 +46,23 @@ class DocumentController
         return $documents;
     }
 
+    public static function getUniqueName(string $name, int $folderId): array {
+        global $invalidChars;
+        $filename = pathinfo($name, PATHINFO_FILENAME);
+        $ext = pathinfo($name, PATHINFO_EXTENSION);
+
+        if (strpbrk($filename, implode('', $invalidChars)) !== false) {
+            throw new Exception("caractère interdit dans le fichier '$name'");
+        }
+        $existingNames = array_column(self::listTuplesToPrint(folderId: $folderId), 'name');
+        $newName = $name;
+        $i = 1;
+        while (in_array($newName, $existingNames)) {
+            $newName = $filename . ' (' . $i . ')';
+            $i++;
+        }
+        return ['name'=>$newName,
+                'ext'=>$ext];
+    }
 
 }

@@ -41,3 +41,5 @@ $typeToPreview = [
 ];
 
 $rootPath = 'C:\wamp64\www\EZDrive\bdd\content';
+
+$invalidChars = ['/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', "\0", "\n", "\r"];

@@ -3,21 +3,48 @@
 session_start();
 require '../Controllers/FolderController.php';
 require '../Controllers/DocumentController.php';
-require '../Config/config.php';
-global $rootPath;
+global $rootPath, $invalidChars, $extToType, $typeToPreview;
 
-$data = json_decode(file_get_contents('php://input'), true);
+$meta = json_decode($_POST['meta'] ?? '{}', true);
+$file = $_FILES['file'] ?? null;
+
+
+
+if (!$file || !$meta) {
+    echo "Fichier ou métadonnées manquants";
+    exit;
+}
 
 // Récupération du folderId
-if (isset($data['folderId']) && $data['folderId'] === 'root') {
+if (isset($meta['folderId']) && $meta['folderId'] === 'root') {
     $folderId = FolderController::getRoot()['id'];
 } else {
-    $folderId = isset($data['folderId']) ? (int)$data['folderId'] : null;
+    $folderId = isset($meta['folderId']) ? (int)$meta['folderId'] : null;
+}
+
+if (isset($meta['token'])){
+    if(!isset($_SESSION['upload']['token'])){
+        $_SESSION['upload']['token'] = $meta['token'];
+    }
+
+    if($_SESSION['upload']['token'] !== $meta['token']){
+        $_SESSION['upload']['created_folders'] = [];
+        $_SESSION['upload']['token'] = $meta['token'];
+    }
+
+    if(!isset($_SESSION['upload']['created_folders'])){
+        $_SESSION['upload']['created_folders'] = [];
+    }
+
+    $created = $_SESSION['upload']['created_folders'];
+}
+else {
+echo'absent token';
+exit;
 }
 
 // Fichiers reçus
-$files = $data['files'] ?? [];
-
+print_r($_FILES);
 // Construction du chemin
 $path = [];
 $folder = $folderId;
@@ -27,54 +54,59 @@ do {
     $folder = $currentFolder['parent_id'];
 } while ($folder !== null);
 
-// Exclusion du dernier dossier et inversion
 $pathWithoutLast = array_reverse(array_slice($path, 0, -1));
 $pathString = !empty($pathWithoutLast) ? implode('/', $pathWithoutLast) : '';
-// Liste des noms existants
-$err = ['/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', "\0", "\n", "\r"];
 
-$existingName = array_column(DocumentController::listTuplesToPrint(folderId: $folderId), 'name');
+if(isset($meta['webdir'])){
+    $folderId = FolderController::createAllFolders($meta['webdir'], $folderId, $created);
+    $pathString = FolderController::getById($folderId)[0]['path'];
+    $_SESSION['upload']['created_folders'] = $created;
+}
 
-foreach ($files as $file) {
-    $baseName = pathinfo($file['name'], PATHINFO_FILENAME);
-    $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
 
-    // Vérifier les caractères interdits
-    if (strpbrk($baseName, implode('', $err)) !== false) {
-        continue; // ignorer ce fichier
+    try {
+        $new = DocumentController::getUniqueName($meta['name'], $folderId);
     }
-
-    $newName = $baseName;
-    $i = 1;
-
-    // Gestion des doublons
-    print_r($existingName);
-    echo $newName . '.' . $ext;
-    while (in_array($newName . '.' . $ext, $existingName)) {
-        $newName = $baseName . ' (' . $i . ')';
-        $i++;
+    catch (Exception $e) {
+            echo "Erreur : " . $e->getMessage();
+            exit;
     }
-    $newName .= '.' . $ext;
-    $existingName[] = $newName; // mettre à jour pour les prochains fichiers
+    $newName = $new['name'] ?? [];
+    $ext = $new['ext'] ?? [];
+
+
+    $rpath = ($pathString !== '' ? $pathString . '/' : '') . $newName;
+
 
     $document = [
         'name' => $newName,
-        'path' => ($pathString !== '' ? $pathString . '/' : '') . $newName,
+        'path' => $rpath,
         'folder_id' => $folderId,
         'type' => $extToType[$ext] ?? 'document',
-        'size' => $file['size'],
+        'size' => $meta['size'],
         'preview' => $typeToPreview[$extToType[$ext] ?? 'document'] ?? 'file.png',
         'owner' => $_SESSION['user']['user_id']
     ];
 
-    if (!empty($file['content'])) {
+        $basePath = $rootPath;
+
+            $path = $basePath . '/' . $rpath;
+            $path = str_replace(["\\", "//"], ["/", "/"], $path);
+
         DocumentController::insert($document);
 
-        $path = $rootPath . '/' . $document['path'];
-        $path = str_replace(["\\", "//"], ["/", "/"], $path);
-
         if (!file_exists($path)) {
-            $base64 = preg_replace('#^data:.*;base64,#', '', $file['content']);
-            file_put_contents($path, base64_decode($base64));        }
-    }
-}
+            if(move_uploaded_file($_FILES['file']['tmp_name'], $path)){
+                echo 'file created at ' . $path;
+            }
+            else{
+                $error = error_get_last();
+                error_log('Échec move_uploaded_file vers ' . $path . '. Erreur : ' . print_r($error, true));
+            }
+        }
+        else{
+            error_log('Fichier existant : ' . $path);
+        }
+
+
+    json_encode("SUCCESS");

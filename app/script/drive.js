@@ -1,20 +1,23 @@
 let ctrl = false; // Ctrl press
 let a = false;    // 'a' press
 let q = false;    // 'w' press
+let theme = "default"
 
 // Créer input file unique pour upload
 const fileInput = document.createElement('input');
 const contentPath = '../../bdd/content/';
 fileInput.type = 'file';
 fileInput.multiple = true;
+fileInput.webkitdirectory = true;
 
 
 // Charger les fichiers et dossiers
 function loadFiles() {
     const previewPath = '../../bdd/_thumbs/';
-    const folderPreview = previewPath + 'xxx_folder.png';
+    const folderPreview = previewPath + theme + 'folder.png';
     const folderId = window.location.search.split("=")[1];
     const criteria = { type: [] };
+console.log(theme);
 
     // Types
     if (document.getElementById('filter-images').checked) criteria.type.push("image");
@@ -50,7 +53,8 @@ function loadFiles() {
             });
 
             data.Files.forEach(file => {
-                const preview = previewPath + file.preview;
+                const preview = previewPath + theme + file.preview;
+                console.log(preview);
                 const div = document.createElement('div');
                 div.className = 'file-icon';
                 div.dataset.id = file.id;
@@ -176,48 +180,36 @@ document.querySelector('.delete').addEventListener('click', () => {
 // Upload
 document.querySelector('.upload').addEventListener('click', () => fileInput.click());
 
-fileInput.addEventListener('change', () => {
-    const folderId = window.location.search.split("=")[1];
+fileInput.addEventListener('change', async () => {
+    const token = Math.random().toString(36).slice(2, 10);
+    const folderId = new URLSearchParams(window.location.search).get("folderId");
     const files = Array.from(fileInput.files);
 
-    // Promesses pour attendre la lecture de tous les fichiers
-    const readFiles = files.map(file => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                resolve({
-                    name: file.name,
-                    size: file.size,
-                    extension: file.name.split('.').pop(),
-                    type: file.type,
-                    lastModified: file.lastModified,
-                    content: e.target.result // base64
-                });
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file); // ou readAsText si c'est du texte
-        });
-    });
+    for (const file of files) {
+        const form = new FormData();
+        form.append("file", file);
+        form.append("meta", JSON.stringify({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            lastModified: file.lastModified,
+            webdir: file.webkitRelativePath || "",
+            folderId,
+            token
+        }));
 
-    // Une fois que tous les fichiers sont lus
-    Promise.all(readFiles).then(filesData => {
-        fetch('../ajax/upload.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                folderId: folderId,
-                files: filesData
-            })
-        })
-            .then(res => res.text())
-            .then(data => {
-                console.log(data);
-                loadFiles();
-            });
-    }).catch(err => console.error(err));
+        try {
+            const response = await fetch("../ajax/upload.php", { method: "POST", body: form });
+            const text = await response.text();
+            console.log(`Fichier envoyé : ${file.name}`, text);
+            loadFiles();
+        } catch (err) {
+            console.error(`Erreur pour ${file.name} :`, err);
+        }
+    }
 });
+
+
 
 // Double-clic sur icône
 document.body.addEventListener('dblclick', e => {
@@ -249,4 +241,52 @@ document.querySelectorAll('.filter').forEach(filter => filter.addEventListener('
 document.querySelector('.logout').addEventListener('click', logout);
 
 // Charger les fichiers au chargement de la page
-window.onload = loadFiles;
+window.onload = () => {
+    if (!sessionStorage.getItem('firstVisitDone')) {
+        document.getElementById("themeLink").setAttribute("href", "../css/default.css");
+        document.querySelector(".logo").textContent = "EZDrive";
+        document.querySelector('.delete img').src = "../ressources/delete_eighty.png";
+        document.querySelector('.download img').src = "../ressources/download_eighty.png";
+        document.querySelector('.upload img').src = "../ressources/upload.png";
+        document.querySelector('.create_folder img').src = "../ressources/create_folder.png";
+        theme = "EZDrive";
+        sessionStorage.setItem('firstVisitDone', 'true');
+    }
+    window.onload= loadFiles;
+};
+
+
+
+document.querySelector(".profil").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+});
+
+// fermer le popup
+document.querySelector(".popup .close-btn").addEventListener("click", () => {
+    document.querySelector(".popup").classList.remove("show");
+});
+
+// exemple bouton à l'intérieur
+document.querySelector(".popup .btn1").addEventListener("click", () => {
+    console.log("Bouton 1 cliqué");
+    if(theme === "xxx"){
+        document.getElementById("themeLink").setAttribute("href", "../css/default.css");
+        document.querySelector(".logo").textContent = "EZDrive";
+        document.querySelector('.delete img').src = "../ressources/delete_eighty.png";
+        document.querySelector('.download img').src = "../ressources/download_eighty.png";
+        document.querySelector('.upload img').src = "../ressources/upload.png";
+        document.querySelector('.create_folder img').src = "../ressources/create_folder.png";
+        theme = "EZDrive"
+        loadFiles()
+    }
+    else {
+        document.getElementById("themeLink").setAttribute("href", "../css/porndrive.css");
+        document.querySelector(".logo").textContent = "PornDrive";
+        document.querySelector('.delete img').src = "../ressources/delete.png";
+        document.querySelector('.download img').src = "../ressources/download.png";
+        document.querySelector('.upload img').src = "../ressources/upload.png";
+        document.querySelector('.create_folder img').src = "../ressources/create_folder.png";
+        theme = "xxx"
+        loadFiles()
+    }
+});
