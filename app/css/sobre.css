@@ -1,0 +1,668 @@
+/**
+ * ====================================================================
+ * 0. CSS Variables (Custom Properties) - Thème Sobre, Moderne & Glassy
+ * NOUVELLE PALETTE DE COULEURS FROIDES ET ADOUCIES
+ * ====================================================================
+ */
+:root {
+    /* --- COULEURS FOND/BASE --- */
+    --main-bg-color: #0b0f1a;      /* Fond principal très sombre, presque noir-bleu */
+    --header-bg: #1a2033;          /* Fond de l'en-tête et de la sidebar (bleu-gris foncé) */
+    --content-bg: #13182b;         /* Fond du contenu principal (légèrement plus clair que header) */
+
+    /* --- COULEURS ACCENTS FROIDES / MODERNES --- */
+    --primary-accent: #5a7dff;     /* Bleu doux et moderne (boutons principaux, focus) */
+    --secondary-accent: #00bcd4;   /* Cyan subtil (lumières, petits détails) */
+    --text-light: #e0e6f0;         /* Texte clair général */
+    --text-muted: #9aa4b8;         /* Texte secondaire ou désactivé */
+
+    /* --- COULEURS 80s DISCRÈTES (pour les touches subtiles) --- */
+    --retro-pink: #ff6e87;         /* Rose/Rouge doux (Déconnexion) */
+
+    /* --- EFFETS GLASSY ET OMBERES --- */
+    --glass-effect: rgba(255, 255, 255, 0.08); /* Fond transparent pour effet verre */
+    --border-glass: rgba(255, 255, 255, 0.15); /* Bordure légère */
+    --shadow-light: rgba(0, 0, 0, 0.3);        /* Ombre douce */
+    --shadow-deep: rgba(0, 0, 0, 0.5);         /* Ombre plus prononcée */
+    --select-color: rgba(90, 125, 255, 0.25); /* Sélection: Bleu doux transparent */
+
+    /* --- DIMENSIONS & ESPACEMENTS --- */
+    --header-height: 70px;
+    --sidebar-width: 240px;
+    --spacing-sm: 8px;
+    --spacing-md: 15px;
+    --spacing-lg: 25px;
+
+    /* --- RAYONS DE BORDURE --- */
+    --border-radius-sm: 6px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 16px;
+
+    /* --- ANIMATION / TRANSITIONS --- */
+    --transition-speed-fast: 0.12s;
+    --transition-speed-normal: 0.25s;
+    --transition-speed-slow: 0.4s;
+}
+
+
+/**
+ * ====================================================================
+ * 1. Global Reset & Body Styles
+ * ====================================================================
+ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    cursor: url('../ressources/flèche_eighty.cur'), auto;
+}
+
+a, button, [role="button"], .contextLink:hover, .sidebar label:hover {
+    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+}
+input[type="text"], .popup-content select {
+    cursor: text;
+}
+
+html, body, .page-container {
+    background-color: var(--main-bg-color);
+    user-select: none;
+    background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(255,255,255,0.01) 3px, rgba(255,255,255,0.01) 4px);
+    color: var(--text-light);
+}
+
+.page-container {
+    display: flex;
+    height: calc(100vh - var(--header-height));
+}
+
+
+/**
+ * ====================================================================
+ * 2. Header (En-tête de la page) - SOBRE ET GLASSY
+ * ====================================================================
+ */
+.header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 10px var(--spacing-lg);
+
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-glass);
+    z-index: 100;
+    box-shadow: 0 3px 15px var(--shadow-deep);
+}
+
+/* Flexbox pour la structure interne */
+.header .left, .header .center, .header .right { display: flex; align-items: center; }
+.header .center { flex: 1; justify-content: center; }
+.header .right { gap: var(--spacing-md); }
+
+/* --- Logo Style (Glow Effect) --- */
+.header .logo {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--text-light);
+    /* Glow très subtil et froid */
+    text-shadow: 0 0 5px var(--primary-accent), 0 0 10px var(--secondary-accent);
+    letter-spacing: 0.5px;
+}
+
+/* --- Search Bar --- */
+.header .search-bar {
+    display: flex;
+    align-items: center;
+    height: 45px;
+    padding: 0 5px;
+    border-radius: var(--border-radius-md);
+    gap: 5px;
+}
+
+.header .search-bar input {
+    width: 280px;
+    transition: width var(--transition-speed-slow);
+    height: 100%;
+    padding: 0 12px;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    border: 1px solid var(--border-glass);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--glass-effect);
+    box-shadow: inset 0 0 8px var(--shadow-light);
+    backdrop-filter: blur(2px);
+}
+.header .search-bar input::placeholder { color: var(--text-muted); }
+.header .search-bar input:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    outline: 1px solid var(--primary-accent);
+}
+.header .search-bar input:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    width: 350px;
+    outline: 1px solid var(--primary-accent);
+    box-shadow: inset 0 0 8px var(--primary-accent), 0 0 10px var(--primary-accent);
+}
+
+/* --- BOUTON RECHERCHER --- */
+.header .search-bar button {
+    font-size: 0.9rem;
+    height: 100%;
+    padding: 0 18px;
+    border-radius: var(--border-radius-sm);
+    background-color: var(--primary-accent);
+    border: none;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 3px 10px var(--shadow-light);
+    transition: transform var(--transition-speed-fast), background-color var(--transition-speed-normal), box-shadow var(--transition-speed-normal);
+}
+.header .search-bar button:hover {
+    background-color: #6c91ff;
+    box-shadow: 0 3px 15px var(--primary-accent);
+}
+.header .search-bar button:active { transform: translateY(1px); }
+
+/* --- Right Actions Buttons (Icon & Text) --- */
+.header .right button {
+    all: unset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+}
+
+.header .right button img {
+    max-width: 26px;
+    max-height: 26px;
+    filter: drop-shadow(0 1px 3px rgba(0,213,255,0.08));
+    cursor: inherit;
+}
+
+/* Icon buttons (Upload, Download, Folder, Delete) - Effet glassy */
+.header .right button.upload,
+.header .right button.download,
+.header .right button.create_folder,
+.header .right button.delete {
+    background-color: var(--glass-effect);
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-glass);
+    transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast), box-shadow var(--transition-speed-normal);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 2px 8px var(--shadow-light);
+    backdrop-filter: blur(2px);
+}
+.header .right button.download:hover,
+.header .right button.upload:hover,
+.header .right button.create_folder:hover,
+.header .right button.delete:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--primary-accent);
+}
+
+/* --- BOUTONS PROFIL ET DÉCONNEXION (SOULIGNEMENT SUBTIL & COULEURS) --- */
+.header .right button.profil,
+.header .right button.logout {
+    all: unset; /* Réinitialisation pour éviter les interférences */
+    display: flex;
+    align-items: center;
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0 5px; /* Petit padding pour la zone de clic */
+    transition: color var(--transition-speed-normal), transform var(--transition-speed-fast);
+    position: relative;
+    overflow: hidden;
+    /* Ajout du curseur pointer pour indiquer l'interactivité */
+    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+}
+
+/* Pseudo-élément pour le soulignement animé */
+.header .right button.profil::after,
+.header .right button.logout::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; /* Positionné légèrement sous le texte */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: transparent; /* Invisible par défaut */
+    transition: background-color var(--transition-speed-normal) ease, transform var(--transition-speed-normal) ease;
+    transform: scaleX(0); /* Cache le soulignement */
+    transform-origin: right; /* L'animation commence à droite */
+}
+
+/* Effet au survol des boutons textuels */
+.header .right button.profil:hover {
+    color: var(--primary-accent); /* Couleur au survol: Bleu */
+    transform: translateY(-1px);
+    text-shadow: 0 0 5px rgba(90, 125, 255, 0.4);
+}
+.header .right button.profil:hover::after {
+    background-color: var(--primary-accent);
+    transform: scaleX(1); /* Révèle le soulignement */
+    transform-origin: left; /* Anime depuis la gauche */
+}
+
+/* Effet au survol du bouton DÉCONNEXION */
+.header .right button.logout:hover {
+    color: var(--retro-pink); /* Couleur au survol: Rose/Rouge */
+    transform: translateY(-1px);
+    text-shadow: 0 0 5px rgba(255, 110, 135, 0.4);
+}
+.header .right button.logout:hover::after {
+    background-color: var(--retro-pink);
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Style de clic générique conservé pour tous les boutons */
+.header .right button:active { transform: translateY(1px); }
+
+
+/**
+ * ====================================================================
+ 3. Sidebar (Barre Latérale)
+ * ====================================================================
+ */
+.sidebar {
+    position: fixed;
+    width: var(--sidebar-width);
+    padding: 20px;
+    background-color: var(--header-bg);
+    height: 100%;
+    top: var(--header-height);
+    left: 0;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-glass);
+    z-index: 50;
+    box-shadow: inset -3px 0 10px var(--shadow-deep);
+}
+
+.sidebar h3 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--secondary-accent);
+    letter-spacing: 0.8px;
+    font-weight: 600;
+    text-shadow: none;
+}
+.sidebar ul { list-style: none; margin-bottom: var(--spacing-lg); }
+.sidebar li { margin-bottom: var(--spacing-sm); }
+
+.filter { display: none; }
+
+/* Style du label (bouton de filtre) - ÉTAT DÉCOCHÉ (GLASSY) */
+.sidebar label {
+    display: block;
+    padding: 10px var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+
+    background-color: var(--glass-effect);
+    border: 1px solid var(--border-glass);
+    backdrop-filter: blur(3px);
+
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-align: center;
+    font-size: 1rem;
+    transition: all var(--transition-speed-normal);
+
+    box-shadow: 0 2px 8px var(--shadow-light);
+    text-shadow: none;
+}
+
+/* Effet de survol (HOVER) - Sobre et accentué */
+.sidebar label:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-light);
+    box-shadow: 0 4px 12px var(--primary-accent);
+    transform: translateY(-1px);
+    border-color: var(--primary-accent);
+}
+
+/* Enfoncement pour l'effet de clic */
+label:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 5px var(--primary-accent), inset 0 0 8px var(--shadow-deep);
+    border-color: var(--primary-accent);
+}
+
+/* Style de l'état "checked/actif" - Moderne et vibrant */
+.filter:checked + label {
+    background-color: var(--primary-accent);
+    color: white;
+    text-shadow: none;
+    box-shadow: 0 0 15px var(--primary-accent), inset 0 0 8px rgba(0,0,0,0.5);
+    border: 1px solid var(--primary-accent);
+    font-weight: 600;
+}
+
+/* Ajustement du hover sur l'état actif */
+.filter:checked + label:hover {
+    background-color: #6c91ff;
+    color: white;
+    box-shadow: 0 0 20px #6c91ff;
+}
+
+/**
+ * ====================================================================
+ * 4. Main Content (Zone principale d'affichage des fichiers)
+ * ====================================================================
+ */
+.main-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 90px);
+    grid-auto-rows: 120px;
+    gap: 20px;
+    padding: var(--spacing-lg);
+    background-color: var(--content-bg);
+    border-top-left-radius: var(--border-radius-md);
+    margin-top: var(--header-height);
+    margin-left: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: inset 0 3px 10px var(--shadow-deep);
+}
+
+/* --- File/Folder Icons Styles --- */
+.folder-icon, .file-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--glass-effect);
+    border-radius: var(--border-radius-md);
+    color: var(--text-light);
+    border: 1px solid var(--border-glass);
+    box-shadow: 0 2px 8px var(--shadow-light);
+    backdrop-filter: blur(2px);
+    transition: background-color var(--transition-speed-normal), box-shadow var(--transition-speed-normal), transform var(--transition-speed-fast);
+}
+
+/* Hover effect */
+.folder-icon:hover, .file-icon:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--primary-accent);
+}
+
+/* Selected states (classes ajoutées par JS) */
+.folder-icon.ctrl, .file-icon.ctrl { background-color: rgba(255, 255, 255, 0.15); }
+
+.folder-icon.show, .file-icon.show{
+    background-color: var(--select-color);
+    box-shadow: 0 0 15px var(--secondary-accent);
+    transform: translateY(-3px);
+}
+
+.folder-icon.multiSelected, .file-icon.multiSelected {
+    background-color: rgba(255, 110, 135, 0.25); /* Accents rose/rouge doux */
+    box-shadow: 0 0 15px var(--retro-pink);
+    transform: translateY(-3px);
+}
+
+.folder-icon.menuSelected, .file-icon.menuSelected {
+    background-color: rgba(255, 110, 135, 0.6);
+    box-shadow: 0 0 15px var(--retro-pink);
+    transform: translateY(-3px);
+}
+
+
+.folder-icon img, .file-icon img { max-width: 70px; max-height: 70px; cursor: inherit; }
+.folder-icon .name, .file-icon .name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    max-width: 90%;
+    text-align: center;
+    font-size: 0.75rem;
+    margin-top: 5px;
+    color: var(--text-light);
+    text-shadow: 0 1px 0 var(--shadow-deep);
+}
+
+/* --- Scrollbar Customization for main-content --- */
+.main-content::-webkit-scrollbar { width: 10px; }
+.main-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 5px;
+}
+.main-content::-webkit-scrollbar-thumb {
+    background-color: var(--primary-accent);
+    border-radius: 5px;
+    border: 2px solid var(--main-bg-color);
+}
+.main-content::-webkit-scrollbar-thumb:hover {
+    background-color: #6c91ff;
+}
+
+
+/**
+ * ====================================================================
+ * 5. Context Menu Styles
+ * ====================================================================
+ */
+.context{
+    width: 200px;
+    margin: 0;
+    padding: 0;
+    background-color: #1a2033;
+    position: fixed;
+    visibility: hidden;
+    z-index: 1000;
+    border: 1px solid var(--border-glass);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 5px 20px var(--shadow-deep), inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Styles des Liens/Options --- */
+.contextLink{
+    list-style-type: none;
+    padding: 0.6em 1em;
+    font-size: 0.95em;
+    font-family:'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    color: var(--text-light);
+    transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast);
+}
+
+/* --- Style des Icônes --- */
+.contextLink img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 3px var(--secondary-accent));
+}
+
+/* --- Effet de Survol (Hover) --- */
+.contextLink:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--primary-accent);
+    box-shadow: inset 0 0 5px var(--primary-accent);
+}
+
+/* Séparateur pour les options (facultatif) */
+.contextLink + .contextLink {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Option désactivée */
+.contextLink.disabled {
+    color: var(--text-muted);
+    pointer-events: none;
+}
+.contextLink.disabled:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/**
+ * ====================================================================
+ * 6. Popup / Modal Styles - MODERNE & GLASSY
+ * ====================================================================
+ */
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    max-width: 90%;
+    background-color: rgba(26, 32, 51, 0.95);
+    border-radius: var(--border-radius-lg);
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 30px var(--shadow-deep), inset 0 0 15px rgba(255,255,255,0.05);
+    backdrop-filter: blur(8px);
+
+    overflow: hidden;
+    z-index: 1000;
+    font-family: 'Inter', sans-serif;
+}
+.popup.show { display: block; }
+.popup button { all: unset; cursor: inherit; }
+
+
+/* --- Popup Header --- */
+.popup-header {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.3rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
+    text-shadow: 0 0 3px var(--secondary-accent);
+}
+.popup-header h2 {
+    font-size: 1.3rem;
+    margin: 0;
+    color: var(--text-light);
+    text-shadow: 0 0 3px var(--secondary-accent);
+}
+
+/* Bouton de Fermeture (X) */
+.popup-header .close-btn {
+    background-color: var(--text-muted);
+    color: var(--main-bg-color);
+    border-radius: var(--border-radius-sm);
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
+    box-shadow: 0 2px 8px var(--shadow-light);
+    display: inline-block;
+}
+.popup-header .close-btn:hover {
+    background-color: #ff4d4d;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px #ff4d4d;
+}
+
+
+/* --- Popup Content --- */
+.popup-content {
+    padding: 30px;
+    color: var(--text-light);
+    background-color: rgba(19, 24, 43, 0.9);
+    min-height: 180px;
+}
+
+.popup-content h3 {
+    color: var(--primary-accent);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
+    text-shadow: none;
+}
+
+/* Form Elements (Input/Select) */
+.popup-content label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.popup-content input[type="text"],
+.popup-content select {
+    width: 100%;
+    height: 38px;
+    padding: 0 var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--border-glass);
+    background-color: var(--glass-effect);
+    color: var(--text-light);
+    font-size: 0.95rem;
+    box-shadow: inset 0 0 6px var(--shadow-light);
+    transition: all var(--transition-speed-normal);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+.popup-content input[type="text"]:focus,
+.popup-content select:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+    box-shadow: inset 0 0 6px var(--primary-accent), 0 0 8px var(--primary-accent);
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Content Buttons */
+.popup-content button {
+    display: inline-block;
+    background-color: var(--primary-accent);
+    color: white;
+    border-radius: var(--border-radius-sm);
+    padding: 9px 16px;
+    margin: 5px 10px 5px 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: none;
+    transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
+    box-shadow: 0 2px 8px var(--shadow-light);
+}
+.popup-content button:hover {
+    background-color: #6c91ff;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--primary-accent);
+}
+.popup-content button:active { transform: translateY(1px); }
+
+/* Specific Delete Button Style */
+.popup-content .DeleteAcct {
+    background-color: var(--retro-pink);
+    box-shadow: 0 2px 8px rgba(255, 110, 135, 0.6);
+}
+.popup-content .DeleteAcct:hover {
+    background-color: #ff8c9c;
+    color: white;
+    box-shadow: 0 4px 12px var(--retro-pink);
+}

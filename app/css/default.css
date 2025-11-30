@@ -1,118 +1,185 @@
+/**
+ * ====================================================================
+ * 0. CSS Variables (Custom Properties) - Thème Synthwave/Rétro 80s V2
+ * ====================================================================
+ */
 :root {
-    /* Violet signature, très 80s */
-    --main-color: #9a32ff;
-    /* Violet plus clair au survol */
-    --hoover-btn: #b063e3;
-    /* Cyan saturé pour la sélection/l'actif (effet plasma) */
-    --select-color: rgba(29, 242, 255, 0.5);
-    /* Ligne de balayage subtile */
-    --scanline: rgba(255,255,255,0.03);
-    /* Neon Blue/Cyan - Utilisé pour le glow et les accents */
-    --neon-blue: #1df2ff;
-    /* Arrière-plan très sombre/bleu-nuit */
-    --dark-bg: #0f0020;
+    /* --- COULEURS NÉON/ACCENTS VIFS --- */
+    --main-color: rgba(62, 36, 156, 0.44);      /* Violet signature (Boutons, Glow Principal) */
+    --hoover-btn: rgba(96, 35, 189, 0.73);      /* Magenta/Rose Vif (Hover Principal) */
+    --neon-accent: #3f9fff;     /* Bleu Électrique/Cyan Riche (Titres, Accent) */
+    --neon-glow: #1df2ff;       /* Cyan VIF pour les effets de GLOW TRES FORTs */
+    --select-color: rgba(29, 187, 255, 0.35); /* Cyan Plasma */
+
+    /* --- COULEURS FOND/BASE --- */
+    --dark-bg: #0f0020;         /* Fond sombre de base */
+    --header-bg: #1d0f4e;       /* Fond en-tête/sidebar profond */
+    --scanline: rgba(255,255,255,0.04); /* Scanlines légèrement plus visibles */
+
+
+    /* --- DIMENSIONS & ESPACEMENTS --- */
+    --header-height: 80px;
+    --sidebar-width: 250px;
+    --spacing-sm: 8px;
+    --spacing-md: 15px;
+    --spacing-lg: 25px;
+
+    /* --- RAYONS DE BORDURE --- */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+
+    /* --- ANIMATION / TRANSITIONS --- */
+    --transition-speed-fast: 0.1s;
+    --transition-speed-normal: 0.25s;
+    --transition-speed-slow: 0.35s;
 }
 
 
+/**
+ * ====================================================================
+ * 1. Global Reset & Body Styles
+ * ====================================================================
+ */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: Trebuchet MS, sans-serif;
-    cursor: url('../ressources/pointinghand_eighty.cur'), auto;
+    font-family: 'VT323', monospace; /* Police Rétro */
+    cursor: url('../ressources/flèche_eighty.cur'), auto;
 }
 
-
+a, button, [role="button"], .contextLink:hover, .sidebar label:hover {
+    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+}
+input[type="text"], .popup-content select {
+    cursor: text;
+}
 
 html, body, .page-container {
     background-color: #180829;
     user-select: none;
+    /* Rétablissement des scanlines */
     background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, var(--scanline) 3px, var(--scanline) 4px);
+    color: #f0f0ff; /* Texte blanc/bleu très clair */
 }
 
+.page-container {
+    display: flex;
+    height: calc(100vh - var(--header-height));
+}
+
+
+/**
+ * ====================================================================
+ * 2. Header (En-tête de la page) - RÉTRO NEON
+ * ====================================================================
+ */
 .header {
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 80px;
+    height: var(--header-height);
     display: flex;
     align-items: center;
-    padding: 10px 25px;
+    padding: 10px var(--spacing-lg);
+
+    /* FOND HARMONISÉ - Dégradé profond */
     background: linear-gradient(90deg, #1d0f4e, #4c053d 40%, #16075c);
+
     color: #7234b5;
-    border-bottom: 6px solid rgba(180, 54, 255, 0.7);
+    /* Bordure néon épaisse */
+    border-bottom: 5px solid rgba(180, 54, 255, 0.7);
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 0, 255, 0.4);
 }
 
-
-
+/* Flexbox pour la structure interne */
 .header .left, .header .center, .header .right { display: flex; align-items: center; }
 .header .center { flex: 1; justify-content: center; }
+.header .right { gap: var(--spacing-md); }
 
+/* --- Logo Style (Glow Effect) --- */
 .header .logo {
     font-size: 2.7rem;
     font-weight: bold;
     color: #e4feff;
-    text-shadow: 0 0 4px #3f9fff, 0 0 10px #0080ff, 0 0 20px #a100ff;
+    /* Glow Néon Puissant */
+    text-shadow: 0 0 5px var(--neon-accent), 0 0 10px var(--neon-glow), 0 0 20px #a100ff;
+    letter-spacing: 2px;
 }
 
+/* --- Search Bar --- */
 .header .search-bar {
     display: flex;
     align-items: center;
     height: 60px;
     padding: 0 5px;
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     gap: 5px;
 }
 
 .header .search-bar input {
     width: 300px;
-    transition: width 0.3s;
+    transition: width var(--transition-speed-slow);
     height: 75%;
     padding: 0 10px;
-    color: #3cc6d3;
-    font-size: 20px;
+    color: var(--neon-accent);
+    font-size: 1.1rem;
+    /* Bordure néon subtile */
     border: 1px solid rgba(154,50,255,0.4);
-    border-radius: 8px;
+    border-radius: var(--border-radius-sm);
     background-color: #21052c;
-    font-size: 1rem;
-    box-shadow: inset 0 0 10px rgba(0,213,255,0.08);
+    box-shadow: inset 0 0 12px rgba(64, 0, 255, 0.1), 0 0 5px rgba(255, 0, 0, 0.1);
 }
-
 .header .search-bar input::placeholder { color: rgba(147, 214, 255, 0.45); }
-.header .search-bar input:focus {background-color: rgba(22, 22, 57, 0.45); width: 390px; outline: 1px solid rgba(0,213,255,0.12); }
-
-.header .search-bar input:hover{
-    background-color: rgba(31, 31, 71, 0.45);
-    outline: 1px solid rgba(0,213,255,0.12);
+.header .search-bar input:hover {
+    background-color: rgba(37, 10, 50, 0.7);
+    outline: 1px solid rgba(154,50,255,0.4);
 }
+.header .search-bar input:focus {
+    background-color: rgba(22, 2, 36, 0.9);
+    width: 390px;
+    outline: 1px solid #8c42f8;
+    box-shadow: inset 0 0 12px rgba(0,213,255,0.3), 0 0 15px var(--main-color);
+}
+
+/* --- BOUTON RECHERCHER (Glow Rétro-Néon) --- */
 .header .search-bar button {
     font-size: 14px;
     height: 75%;
     padding: 0 15px;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     background-color: var(--main-color);
-    border: none;
-    color: #000;
-    box-shadow: 0 6px 18px rgba(154,50,255,0.12);
-    transition: transform 0.1s, background-color 0.2s;
+    border: 1px solid var(--main-color);
+    color: #dab5ff;
+    font-weight: bold;
+    /* Ombre/Glow Néon Puissant */
+    box-shadow: 0 0 10px rgba(154,50,255,0.8), 0 0 5px rgba(255,255,255,0.5);
+    transition: transform var(--transition-speed-fast), background-color var(--transition-speed-normal), box-shadow var(--transition-speed-normal);
 }
-
-.header .search-bar button:hover { background-color: var(--hoover-btn); color: #fff; }
+.header .search-bar button:hover {
+    background-color: var(--hoover-btn);
+    color: #fff;
+    box-shadow: 0 0 15px var(--hoover-btn), 0 0 8px #fff;
+}
 .header .search-bar button:active { transform: translateY(1px) scale(0.995); }
 
-.header .right {
-    gap: 15px;
-}
-
+/* --- Right Actions Buttons (Icon & Text) --- */
 .header .right button {
     all: unset;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
 
-.header .right button img { max-width: 30px; max-height: 30px; filter: drop-shadow(0 2px 6px rgba(0,213,255,0.06)); cursor: inherit; }
+.header .right button img {
+    max-width: 30px; max-height: 30px;
+    filter: drop-shadow(0 0 8px rgba(29, 242, 255, 0.2));
+    cursor: inherit;
+}
 
+/* Icon buttons (Upload, Download, Folder, Delete) */
 .header .right button.upload,
 .header .right button.download,
 .header .right button.create_folder,
@@ -120,99 +187,217 @@ html, body, .page-container {
     background-color: rgba(0,0,0,0.4);
     width: 45px;
     height: 45px;
-    border: 1px solid rgba(255,255,255,0.04);
-    transition: background-color 0.15s, transform 0.08s;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Bordure Néon */
+    transition: background-color 0.15s, transform 0.08s, box-shadow 0.25s;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.1);
 }
-
-
 .header .right button.download:hover,
 .header .right button.upload:hover,
 .header .right button.create_folder:hover,
 .header .right button.delete:hover {
-    background-color: rgba(37, 38, 80, 0.45);
+    background-color: rgba(37, 10, 50, 0.6);
     transform: translateY(-1px);
-    box-shadow: 0 0 15px rgba(29, 242, 255, 0.2); /* Glow bleu */
+    /* Glow Néon sur l'icône au survol */
+    box-shadow: 0 0 15px rgba(29, 242, 255, 0.4), 0 0 20px rgba(255, 0, 255, 0.4);
 }
 
+/* --- BOUTONS PROFIL ET DÉCONNEXION (Soulignement Rétro-Néon) - VISIBILITÉ ACCRUE --- */
 .header .right button.profil,
 .header .right button.logout {
-    height: 45px;
-    padding: 0 15px;
-    border-radius: 4px;
-    background-color: var(--main-color);
-    font-size: 1.05rem;
-    color: black;
-    box-shadow: 0 6px 18px rgba(154,50,255,0.12);
-    transition: background-color 0.2s, transform 0.08s;
+    all: unset;
+    display: flex;
+    align-items: center;
+    color: #f0f0ff; /* Couleur du texte par défaut plus claire */
+    font-size: 1.2rem; /* Augmentation de la taille de police */
+    font-weight: 500;
+    letter-spacing: 1.5px; /* Augmentation du spacing */
+    padding: 0 5px;
+    transition: color var(--transition-speed-normal), transform var(--transition-speed-fast), text-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+    /* Glitch permanent subtil - Plus visible */
+    text-shadow:
+            1.5px 0 1.5px var(--main-color),
+            -1.5px 0 1.5px var(--neon-glow),
+            0 0 8px rgba(255,255,255,0.6);
 }
 
-.header .right button.profil:hover,
-.header .right button.logout:hover { background-color: var(--hoover-btn); color: #fff; }
+/* Pseudo-élément pour le soulignement animé */
+.header .right button.profil::after,
+.header .right button.logout::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 4px; /* Épaisseur néon ACCRUE */
+    background-color: transparent;
+    transition: background-color var(--transition-speed-normal) ease, transform var(--transition-speed-normal) ease;
+    transform: scaleX(0);
+    transform-origin: right;
+}
+
+/* Effet au survol des boutons textuels */
+.header .right button.profil:hover {
+    color: #fff;
+    transform: translateY(-1px);
+    /* Glow/Glitch Accentué Cyan */
+    text-shadow:
+            2px 0 2px var(--neon-glow),
+            -2px 0 2px var(--neon-accent),
+            0 0 15px #fff;
+}
+.header .right button.profil:hover::after {
+    background-color: var(--neon-glow);
+    transform: scaleX(1);
+    transform-origin: left;
+    /* Glow du soulignement */
+    box-shadow: 0 0 8px var(--neon-glow);
+}
+
+/* Effet au survol du bouton DÉCONNEXION */
+.header .right button.logout:hover {
+    color: #ffcce5;
+    transform: translateY(-1px);
+    /* Glow/Glitch Accentué Magenta */
+    text-shadow:
+            2px 0 2px var(--hoover-btn),
+            -2px 0 2px var(--main-color),
+            0 0 15px #fff;
+}
+.header .right button.logout:hover::after {
+    background-color: var(--hoover-btn);
+    transform: scaleX(1);
+    transform-origin: left;
+    /* Glow du soulignement */
+    box-shadow: 0 0 8px var(--hoover-btn);
+}
+
+/* Style de clic générique conservé pour tous les boutons */
 .header .right button:active { transform: translateY(1px); }
 
-.page-container { display: flex; height: calc(100vh - 80px); }
 
+/**
+ * ====================================================================
+ 3. Sidebar (Barre Latérale)
+ * ====================================================================
+ */
 .sidebar {
     position: fixed;
-    width: 250px;
+    width: var(--sidebar-width);
     padding: 20px;
-    background: linear-gradient(180deg,#0f0020,#120023 40%,#001621);
+    background: linear-gradient(180deg, #1d0f4e, #4c053d 40%, #16075c);
     height: 100%;
-    top: 80px;
+    top: var(--header-height);
     left: 0;
     overflow-y: auto;
-    border-right: 1px solid rgba(255,255,255,0.03);
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    z-index: 50;
+    box-shadow: inset -5px 0 15px rgba(0, 0, 0, 0.4);
 }
 
-.sidebar h3 { margin-bottom: 12px; font-size: 1.25rem; color: #a3e2ed; letter-spacing: 1px; }
-.sidebar ul { list-style: none; margin-bottom: 25px; }
-.sidebar li { margin-bottom: 8px; }
+.sidebar h3 {
+    margin-bottom: 12px;
+    font-size: 1.2rem; /* RÉDUCTION DE LA TAILLE DE POLICE */
+    color: #e4feff;
+    letter-spacing: 1px;
+    /* Glow Néon Modéré */
+    text-shadow:
+            0 0 1px var(--main-color),
+            0 0 3px var(--neon-glow), /* Légèrement atténué */
+            0 0 8px rgba(255,255,255,0.2); /* Légèrement atténué */
+}
+.sidebar ul { list-style: none; margin-bottom: var(--spacing-lg); }
+.sidebar li { margin-bottom: var(--spacing-sm); }
 
 .filter { display: none; }
 
+/* Style du label (bouton de filtre) - Look rétro/profond */
 .sidebar label {
     display: block;
-    padding: 10px 15px;
-    border-radius: 8px;
-    background-color: var(--main-color);
-    color: black;
+    padding: 10px var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    /* Dégradé de fond pour la profondeur */
+    background: linear-gradient(180deg, #10051d, #0b0114, #10051d);
+    color: #c7cffc;
     margin-bottom: 5px;
     text-align: center;
-    font-size: 1.15rem;
-    transition: background-color 0.2s, color 0.2s, transform 0.15s;
-    box-shadow: 0 6px 12px rgba(154,50,255,0.06);
+    font-size: 1.2rem;
+    transition: all 0.2s;
+    border: 1px solid rgba(154,50,255,0.3);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
-label:active { transform: translateY(1px) scale(0.995); }
+/* Effet de survol (HOVER) - Texte Glitch Néon Multicolore + Décalage Accru */
+.sidebar label:hover {
+    background: linear-gradient(180deg, #150825, #1a022b, #150825);
+    color: #e4feff;
+    text-shadow:
+            2px 0 1px var(--main-color),
+            -2px 0 1px var(--neon-glow),
+            0 0 12px rgba(255,255,255,0.7);
+    box-shadow: 0 0 10px rgba(154,50,255,0.4), 0 0 15px rgba(154,50,255,0.3);
+    transform: translateY(-1px);
+    border-color: var(--main-color);
+}
 
+/* Enfoncement pour l'effet de clic */
+label:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 3px var(--main-color), inset 0 0 10px rgba(0,0,0,0.9);
+    border-color: var(--main-color);
+}
+
+/* Style de l'état "checked/actif" - DÉGRADÉ SOMBRE SUBTIL & GLITCH MAX */
 .filter:checked + label {
-    background-color: #1183b3;
-    color: black;
-    box-shadow: 0 8px 20px rgba(0,213,255,0.06);
+    background: linear-gradient(90deg, #10051d, #1a022b, #10051d);
+    color: #fff;
+    text-shadow:
+            4px 0 4px var(--neon-glow),
+            -4px 0 4px var(--hoover-btn),
+            0 0 20px rgba(255,255,255,0.9);
+    box-shadow: 0 0 12px rgba(154,50,255,0.8), inset 0 0 8px rgba(0,0,0,0.9);
+    border: 1px solid var(--hoover-btn);
 }
 
+/* Ajustement du hover sur l'état actif (plus lumineux encore) */
+.filter:checked + label:hover {
+    background: linear-gradient(90deg, #150825, #22033c, #150825);
+    color: #fff;
+    text-shadow:
+            6px 0 3px var(--neon-glow),
+            -6px 0 3px var(--hoover-btn),
+            0 0 25px rgba(255,255,255,1);
+    box-shadow: 0 0 20px var(--main-color), 0 0 30px rgba(154,50,255,0.8);
+}
 
-
-.filter:checked + label:hover { background-color:#28a1b8 ; color: black; }
-
-.sidebar label:hover { background-color: var(--hoover-btn); color: rgb(241, 228, 239); }
-
+/**
+ * ====================================================================
+ * 4. Main Content (Zone principale d'affichage des fichiers)
+ * ====================================================================
+ */
 .main-content {
     flex: 1;
     display: grid;
     grid-template-columns: repeat(auto-fit, 90px);
     grid-auto-rows: 120px;
-    gap: 22px;
-    padding: 25px;
-    background: linear-gradient(90deg, #4a0066, #3b0e71, #173760);
-    border-top-left-radius: 10px;
-    margin-top: 80px;
-    margin-left: 250px;
-    height: calc(100vh - 80px);
+    gap: 20px;
+    padding: var(--spacing-lg);
+    /* Rétablissement du fond Rétro-Néon */
+    background: linear-gradient(90deg, #4a0066, #3b0e71, #3f1645);
+    border-top-left-radius: var(--border-radius-md);
+    margin-top: var(--header-height);
+    margin-left: var(--sidebar-width);
+    height: calc(100vh - var(--header-height));
     overflow-x: hidden;
     overflow-y: auto;
+    box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.8);
 }
 
+/* --- File/Folder Icons Styles --- */
 .folder-icon, .file-icon {
     width: 100%;
     height: 100%;
@@ -220,98 +405,207 @@ label:active { transform: translateY(1px) scale(0.995); }
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* Rétablissement des couleurs et ombres sombres */
     background-color: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
+    border-radius: var(--border-radius-md);
     color: white;
-    border: 1px solid rgba(255,255,255,0.025);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 12px rgba(154,50,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5), 0 0 8px rgba(154,50,255,0.2);
     backdrop-filter: blur(1px);
-    transition: background-color 0.2s, box-shadow 0.2s, transform 0.12s;
+    transition: background-color var(--transition-speed-normal), box-shadow var(--transition-speed-normal), transform 0.12s;
 }
 
-.folder-icon:hover, .file-icon:hover { background-color: rgba(255, 255, 255, 0.08); transform: translateY(-3px); }
+/* Hover effect */
+.folder-icon:hover, .file-icon:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 12px var(--neon-glow);
+}
+
+/* Selected states (classes ajoutées par JS) */
 .folder-icon.ctrl, .file-icon.ctrl { background-color: rgba(255, 255, 255, 0.12); }
-.folder-icon.show, .file-icon.show { background-color: var(--select-color); box-shadow: 0 0 18px rgba(0,213,255,0.25); transform: translateY(-4px); }
+
+/* UTILISE LE CYAN PLASMA POUR L'ÉTAT DE SÉLECTION DE FICHIER */
+.folder-icon.show, .file-icon.show{
+    background-color: var(--select-color);
+    box-shadow: 0 0 15px rgba(0,213,255,0.7);
+    transform: translateY(-3px);
+}
+
+.folder-icon.multiSelected, .file-icon.multiSelected {
+    background-color: rgba(228, 66, 219, 0.4);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.8);
+    transform: translateY(-3px);
+}
+
+.folder-icon.menuSelected, .file-icon.menuSelected {
+    background-color: rgba(228, 65, 218, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 1);
+    transform: translateY(-3px);
+}
+
 
 .folder-icon img, .file-icon img { max-width: 75px; max-height: 75px; cursor: inherit; }
-.folder-icon .name, .file-icon .name { font-size: 0.8rem; margin-top: 5px; color: rgba(255,255,255,0.92); text-shadow: 0 1px 0 rgba(0,0,0,0.6); }
+.folder-icon .name, .file-icon .name {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    max-width: 90%;
+    text-align: center;
+    font-size: 0.7rem;
+    margin-top: 5px;
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+}
+
+/* --- Scrollbar Customization for main-content --- */
+.main-content::-webkit-scrollbar { width: 10px; }
+.main-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0px;
+}
+.main-content::-webkit-scrollbar-thumb {
+    background-color: var(--main-color);
+    border-radius: 5px;
+    border: 2px solid rgba(0,0,0,0.1);
+}
+.main-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--hoover-btn);
+}
 
 
-/* ==================================== */
-/* POPUP / MODAL STYLES        */
-/* ==================================== */
+/**
+ * ====================================================================
+ * 5. Context Menu Styles - NÉON TRÈS ATTÉNUÉ
+ * ====================================================================
+ */
+.context{
+    width: 200px;
+    margin: 0;
+    padding: 0;
+    background-color: #1a0833;
+    position: fixed;
+    visibility: hidden;
+    z-index: 1000;
+    /* Bordure sobre, non-néon */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--border-radius-sm);
+    /* Baisse du glow */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7), inset 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+/* --- Styles des Liens/Options --- */
+.contextLink{
+    list-style-type: none;
+    padding: 0.6em 1em;
+    font-size: 1em;
+    font-family:'VT323', monospace;
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    color: #a3e2ed;
+    transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast);
+}
+
+/* --- Style des Icônes --- */
+.contextLink img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    /* Filtre néon conservé sur les icônes (petit accent) */
+    filter: drop-shadow(0 0 4px var(--neon-glow));
+}
+
+/* --- Effet de Survol (Hover) - Reste vif --- */
+.contextLink:hover{
+    background-color: rgba(0, 255, 255, 0.3);
+    color: var(--main-color);
+    box-shadow: inset 0 0 6px rgba(0, 255, 255, 0.5);
+}
+
+/* Séparateur pour les options (facultatif) */
+.contextLink + .contextLink {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Option désactivée */
+.contextLink.disabled {
+    color: #444;
+    pointer-events: none;
+}
+.contextLink.disabled:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+/**
+ * ====================================================================
+ * 6. Popup / Modal Styles - RÉTRO NEON (Modale)
+ * ====================================================================
+ */
 
 .popup {
-    /* Cache par défaut, affiché par la classe .show en JS */
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
-    /* Centrage parfait */
     transform: translate(-50%, -50%);
-    width: 550px; /* Légèrement plus large pour l'espace */
+    width: 550px;
     max-width: 90%;
-    background-color: #070013;
-    border-radius: 15px;
+    /* Fond très sombre */
+    background-color: #0c001a;
+    border-radius: var(--border-radius-lg);
 
-    /* Ombre/Glow puissant lié à la main-color */
-    box-shadow: 0 0 50px var(--main-color), inset 0 0 10px rgba(0, 213, 255, 0.1);
+    /* Effet Glitch/Artefact sur la bordure et le glow */
+    border: 2px solid #446eff;
+    box-shadow:
+            0 0 40px #ff24fc,
+            5px 5px 0 #dd00ff, /* Artefact Décalé Magenta */
+            -5px -5px 0 #0ba7d8, /* Artefact Décalé Cyan */
+            inset 0 0 10px rgba(0, 0, 0, 0.8);
 
     overflow: hidden;
     z-index: 1000;
-    font-family: Trebuchet MS, sans-serif; /* Conserver la police du projet */
+    font-family: 'VT323', monospace;
 }
-
-.popup.show {
-    display: block;
-}
-
-/* Réinitialisation de base des boutons dans le popup (important) */
-.popup button {
-    all: unset;
-    cursor: inherit; /* Utilise le curseur personnalisé */
-}
+.popup.show { display: block; }
+.popup button { all: unset; cursor: inherit; }
 
 
-/* --- EN-TÊTE DU POPUP --- */
-
+/* --- Popup Header --- */
 .popup-header {
-    /* Dégradé de l'en-tête */
+    /* Dégradé de plasma */
     background: linear-gradient(90deg, #160025, #00334f);
-    color: #1df2ff;
-    padding: 15px 25px;
-    font-size: 1.5rem;
+    color: var(--neon-glow);
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.8rem;
     font-weight: bold;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Bordure basse pour séparer l'en-tête du contenu */
-    border-bottom: 7px solid var(--main-color);
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    border-bottom: 5px solid var(--main-color);
+    border-top-left-radius: var(--border-radius-lg);
+    border-top-right-radius: var(--border-radius-lg);
 }
-
-/* Style des titres H2/H3 dans l'en-tête (si on utilise h2 pour le titre) */
 .popup-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     margin: 0;
     color: #e4feff;
-    text-shadow: 0 0 4px #3f9fff, 0 0 8px #0080ff; /* Léger glow pour le titre */
+    text-shadow: 0 0 3px #3f9fff, 0 0 8px #0080ff;
 }
 
 /* Bouton de Fermeture (X) */
 .popup-header .close-btn {
     background-color: var(--main-color);
     color: black;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 1.1rem;
-    transition: background-color 0.2s, transform 0.1s;
-    box-shadow: 0 8px 18px rgba(154,50,255,0.12);
-    /* Rendre le bouton cliquable visuellement */
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm) 10px;
+    font-size: 1.2rem;
+    transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
+    box-shadow: 0 6px 15px rgba(154,50,255,0.4);
     display: inline-block;
 }
-
 .popup-header .close-btn:hover {
     background-color: var(--hoover-btn);
     color: #fff;
@@ -319,119 +613,88 @@ label:active { transform: translateY(1px) scale(0.995); }
 }
 
 
-/* --- CONTENU DU POPUP --- */
-
+/* --- Popup Content --- */
 .popup-content {
     padding: 30px;
     color: #cfefff;
+    /* Fond de contenu très sombre */
     background-color: #02000b;
     min-height: 200px;
 }
 
-/* Titres dans le contenu (Ex: "Mon Profil") */
 .popup-content h3 {
-    color: #1df2ff;
-    font-size: 1.3rem;
+    color: var(--neon-accent);
+    font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: 15px;
+    margin-bottom: var(--spacing-md);
     padding-bottom: 5px;
-    border-bottom: 1px dashed rgba(154,50,255,0.2);
+    /* Bordure pointillée plus visible */
+    border-bottom: 2px dashed rgba(154,50,255,0.6);
     letter-spacing: 1px;
-    text-shadow: 0 0 5px rgba(29, 242, 255, 0.1);
+    text-shadow: 0 0 4px rgba(63, 159, 255, 0.4);
 }
 
-/* Style des Labels (Ex: "Mes thèmes :") */
+/* Form Elements (Input/Select) */
 .popup-content label {
     display: block;
     margin-top: 20px;
-    margin-bottom: 8px;
-    font-size: 1.1rem;
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.2rem;
     color: #a3e2ed;
     font-weight: bold;
 }
 
-/* Style des Champs de Saisie (Input) et des Sélecteurs (Select) */
 .popup-content input[type="text"],
 .popup-content select {
     width: 100%;
-    height: 45px;
-    padding: 0 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(154,50,255,0.4);
+    height: 40px;
+    padding: 0 var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(154,50,255,0.7);
     background-color: #150a25;
     color: #e4feff;
-    font-size: 1rem;
-    box-shadow: inset 0 0 10px rgba(0,213,255,0.08);
-    transition: all 0.2s;
-
-    /* S'assurer que le sélecteur ressemble à un champ input */
+    font-size: 1.1rem;
+    box-shadow: inset 0 0 10px rgba(0,213,255,0.15);
+    transition: all var(--transition-speed-normal);
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
 }
-
-/* Focus sur les champs */
 .popup-content input[type="text"]:focus,
 .popup-content select:focus {
     outline: none;
-    border-color: #1df2ff;
-    box-shadow: 0 0 10px rgba(0,213,255,0.4);
+    border-color: var(--neon-accent);
+    box-shadow: 0 0 10px rgba(63, 159, 255, 0.7);
     background-color: #1c0e35;
 }
 
-/* Style général des boutons dans le contenu */
+/* Content Buttons */
 .popup-content button {
     display: inline-block;
     background-color: var(--main-color);
     color: black;
-    border-radius: 8px;
-    padding: 10px 18px; /* Augmenter la taille des boutons */
-    margin: 5px 10px 5px 0; /* Marge droite pour séparer les boutons */
-    font-size: 1rem;
+    border-radius: var(--border-radius-sm);
+    padding: 10px 18px;
+    margin: 5px 10px 5px 0;
+    font-size: 1.1rem;
     font-weight: bold;
-    text-transform: uppercase;
-    transition: background-color 0.2s, transform 0.1s;
-    box-shadow: 0 6px 16px rgba(154,50,255,0.1);
+    transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
+    box-shadow: 0 4px 12px rgba(154,50,255,0.3);
 }
-
 .popup-content button:hover {
     background-color: var(--hoover-btn);
     color: #fff;
     transform: translateY(-2px);
 }
-.popup-content button:active {
-    transform: translateY(1px); /* Effet de pression */
-}
+.popup-content button:active { transform: translateY(1px); }
 
-/* Style spécifique pour le bouton Supprimer */
+/* Specific Delete Button Style */
 .popup-content .DeleteAcct {
-    background-color: #cc0000; /* Rouge */
-    box-shadow: 0 6px 16px rgba(255,0,0,0.4);
+    background-color: #cc0000;
+    box-shadow: 0 4px 12px rgba(255,0,0,0.6);
 }
 .popup-content .DeleteAcct:hover {
     background-color: #ff3333;
     color: white;
-}
-
-
-
-/* Conteneur avec scrollbar */
-.main-content::-webkit-scrollbar {
-    width: 12px;             /* largeur de la barre */
-}
-
-.main-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.07); /* couleur du fond */
-    border-radius: 10px;
-}
-
-.main-content::-webkit-scrollbar-thumb {
-    background-color: var(--main-color); /* couleur du curseur */
-    border-radius: 10px;
-    border: 2px solid rgba(0,0,0,0.2);  /* contour du curseur */
-}
-
-.main-content::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(144, 57, 230, 0.75); /* couleur au survol */
 }

@@ -51,7 +51,6 @@ else {
     <link rel="stylesheet" href="../../css/default.css" id="themeLink">
     <link rel="preload" as="image" href="../../ressources/pointinghand_eighty.cur">
     <script src="../../script/drive.js" defer></script>
-    <link
 </head>
 <body>
 <!-- Header -->
@@ -135,9 +134,9 @@ else {
         <h3><?php echo $_SESSION['user']['name']; ?></h3>
 
         <form id="username-form">
-            <label for="username-input" class="visually-hidden">Changer de nom d'utilisateur</label>
-            <input type="text" id="username-input" placeholder="changer de nom d'utilisateur...">
-            <button class="userName" type="submit">Rechercher</button>
+            <label for="username-input" class="visually-hidden">Changer de nom d'utilisateur : </label>
+            <input type="text" id="username-input" placeholder="un exemple de nom d'utilisateur...">
+            <button class="userName" type="submit">changer</button>
         </form>
 
         <?php if (!empty($userThemes)): ?>
@@ -155,6 +154,19 @@ else {
         <button class="DeleteAcct">Supprimer le compte</button>
     </div>
 
+</div>
+
+<div class="context-menu">
+    <ul class="context">
+        <li class="contextLink"><img src="../../ressources/default/copy.png" alt="copier" /><span class="contextLabel" id="copy" >copier</span></li>
+        <li class="contextLink"><img src="../../ressources/default/paste.png" alt="coller" /><span class="contextLabel" id="paste">coller</span></li>
+        <li class="contextLink"><img src="../../ressources/default/cut.png" alt="couper" /><span class="contextLabel" id="cut">couper</span></li>
+        <li class="contextLink"><img src="../../resso urces/default/properties.png" alt="propriétés" /><span class="contextLabel" id="properties">propriétés</span></li>
+        <li class="contextLink"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel" id="delete">supprimer</span></li>
+        <li class="contextLink"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel" id="rename">renommer</span></li>
+        <li class="contextLink"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel" id="favorites">favori</span></li>
+        <li class="contextLink"><img src="../../ressources/default/selectAll.png" alt="tout selectionner" /><span class="contextLabel" id="selectAll">tout sélectionner</span></li>
+    </ul>
 </div>
 
 </body>

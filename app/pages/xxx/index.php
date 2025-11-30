@@ -142,7 +142,7 @@ else {
         <form id="username-form">
             <label for="username-input" class="visually-hidden">Changer de nom d'utilisateur</label>
             <input type="text" id="username-input" placeholder="changer de nom d'utilisateur...">
-            <button class="userName" type="submit">Rechercher</button>
+            <button class="userName" type="submit">Changer</button>
         </form>
 
         <?php if (!empty($userThemes)): ?>
@@ -162,7 +162,18 @@ else {
     </div>
 
 </div>
-
+<div class="context-menu">
+    <ul class="context">
+        <li class="contextLink"><img src="../../ressources/xxx/copy.png" alt="copier" /><span class="contextLabel" id="copy" >copier</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/paste.png" alt="coller" /><span class="contextLabel" id="paste">coller</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/cut.png" alt="couper" /><span class="contextLabel" id="cut">couper</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/properties.png" alt="propriétés" /><span class="contextLabel" id="properties">propriétés</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/delete.png" alt="supprimer" /><span class="contextLabel" id="delete">supprimer</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/rename.png" alt="renomer" /><span class="contextLabel" id="rename">renommer</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/favorite.png" alt="favoris" /><span class="contextLabel" id="favorites">favori</span></li>
+        <li class="contextLink"><img src="../../ressources/xxx/selectAll.png" alt="tout selectionner" /><span class="contextLabel" id="selectAll">tout sélectionner</span></li>
+    </ul>
+</div>
 </body>
 </html>
 
