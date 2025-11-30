@@ -51,8 +51,10 @@ class DocumentController
         $filename = pathinfo($name, PATHINFO_FILENAME);
         $ext = pathinfo($name, PATHINFO_EXTENSION);
 
-        if (strpbrk($filename, implode('', $invalidChars)) !== false) {
-            throw new Exception("caractère interdit dans le fichier '$name'");
+        foreach ($invalidChars as $char) {
+            if (str_contains($filename, $char)) {
+                $filename = str_replace($char, '_', $filename);
+            }
         }
         $existingNames = array_column(self::listTuplesToPrint(folderId: $folderId), 'name');
         $newName = $name;

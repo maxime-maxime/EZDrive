@@ -1,11 +1,11 @@
 let ctrl = false; // Ctrl press
 let a = false;    // 'a' press
 let q = false;    // 'w' press
-let theme = "default"
+
 
 // Créer input file unique pour upload
 const fileInput = document.createElement('input');
-const contentPath = '../../bdd/content/';
+const contentPath = '../../../bdd/content/';
 fileInput.type = 'file';
 fileInput.multiple = true;
 fileInput.webkitdirectory = true;
@@ -13,12 +13,11 @@ fileInput.webkitdirectory = true;
 
 // Charger les fichiers et dossiers
 function loadFiles() {
-    const previewPath = '../../bdd/_thumbs/';
-    const folderPreview = previewPath + theme + 'folder.png';
+    let theme = getDynamicSegmentFromUrl();
+    const previewPath = '../../../bdd/_thumbs/'+theme+'/';
+    const folderPreview = previewPath+ 'folder.png';
     const folderId = window.location.search.split("=")[1];
     const criteria = { type: [] };
-console.log(theme);
-
     // Types
     if (document.getElementById('filter-images').checked) criteria.type.push("image");
     if (document.getElementById('filter-documents').checked) criteria.type.push("document");
@@ -35,7 +34,7 @@ console.log(theme);
     criteria.type.forEach(t => params.append('type[]', t));
     Object.keys(criteria).forEach(key => { if (key !== 'type') params.append(key, criteria[key]); });
 
-    fetch(`../ajax/getToPrint.php?${params.toString()}`)
+    fetch(`../../ajax/getToPrint.php?${params.toString()}`)
         .then(res => res.json())
         .then(data => {
             const container = document.querySelector('.main-content');
@@ -53,7 +52,7 @@ console.log(theme);
             });
 
             data.Files.forEach(file => {
-                const preview = previewPath + theme + file.preview;
+                const preview = previewPath + file.preview;
                 console.log(preview);
                 const div = document.createElement('div');
                 div.className = 'file-icon';
@@ -70,7 +69,7 @@ console.log(theme);
 
 // Logout
 function logout() {
-    fetch(`../ajax/logout.php`).then(() => window.location.href = '../pages/login.php?ciao=ciao');
+    fetch(`../../ajax/logout.php`).then(() => window.location.href = '../../pages/login.php?ciao=ciao');
 }
 
 // Ctrl + A gestion
@@ -138,7 +137,7 @@ document.querySelector('.download').addEventListener('click', () => {
         else files.push(i.dataset.id);
     });
 
-    const url = `../ajax/download.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
+    const url = `../../ajax/download.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
     fetch(url)
         .then(res => res.json())
         .then(files => {
@@ -166,7 +165,7 @@ document.querySelector('.delete').addEventListener('click', () => {
         else files.push(i.dataset.id);
     });
 
-    const url = `../ajax/delete.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
+    const url = `../../ajax/delete.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
     fetch(url)
         .then(res => res.text())
         .then(files => {
@@ -199,7 +198,7 @@ fileInput.addEventListener('change', async () => {
         }));
 
         try {
-            const response = await fetch("../ajax/upload.php", { method: "POST", body: form });
+            const response = await fetch("../../ajax/upload.php", { method: "POST", body: form });
             const text = await response.text();
             console.log(`Fichier envoyé : ${file.name}`, text);
             loadFiles();
@@ -216,14 +215,14 @@ document.body.addEventListener('dblclick', e => {
     const icon = e.target.closest('div.file-icon, div.folder-icon');
     if (!icon) return;
     if (icon.classList.contains('folder-icon')) {
-        window.location.href = `../pages/index.php?folderId=${icon.dataset.id}`;
+        window.location.href = `../../pages/${getDynamicSegmentFromUrl()}/index.php?folderId=${icon.dataset.id}`;
     } else fetchFileInfo(icon.dataset.id); // fonction existante
 });
 
 document.querySelector('.create_folder').addEventListener('click', () => {
     const folderName = prompt('Nom du dossier :');
     if (folderName) {
-        const url = `../ajax/createFolder.php?name=${encodeURIComponent(folderName)}&parentId=${window.location.search.split("=")[1]}`;
+        const url = `../../ajax/createFolder.php?name=${encodeURIComponent(folderName)}&parentId=${window.location.search.split("=")[1]}`;
         console.log(url);
         fetch(url)
             .then(res => res.text())
@@ -241,19 +240,7 @@ document.querySelectorAll('.filter').forEach(filter => filter.addEventListener('
 document.querySelector('.logout').addEventListener('click', logout);
 
 // Charger les fichiers au chargement de la page
-window.onload = () => {
-    if (!sessionStorage.getItem('firstVisitDone')) {
-        document.getElementById("themeLink").setAttribute("href", "../css/default.css");
-        document.querySelector(".logo").textContent = "EZDrive";
-        document.querySelector('.delete img').src = "../ressources/delete_eighty.png";
-        document.querySelector('.download img').src = "../ressources/download_eighty.png";
-        document.querySelector('.upload img').src = "../ressources/upload.png";
-        document.querySelector('.create_folder img').src = "../ressources/create_folder.png";
-        theme = "EZDrive";
-        sessionStorage.setItem('firstVisitDone', 'true');
-    }
-    window.onload= loadFiles;
-};
+window.onload= loadFiles;
 
 
 
@@ -261,32 +248,52 @@ document.querySelector(".profil").addEventListener("click", () => {
     document.querySelector(".popup").classList.add("show");
 });
 
-// fermer le popup
-document.querySelector(".popup .close-btn").addEventListener("click", () => {
-    document.querySelector(".popup").classList.remove("show");
-});
 
 // exemple bouton à l'intérieur
-document.querySelector(".popup .btn1").addEventListener("click", () => {
-    console.log("Bouton 1 cliqué");
-    if(theme === "xxx"){
-        document.getElementById("themeLink").setAttribute("href", "../css/default.css");
-        document.querySelector(".logo").textContent = "EZDrive";
-        document.querySelector('.delete img').src = "../ressources/delete_eighty.png";
-        document.querySelector('.download img').src = "../ressources/download_eighty.png";
-        document.querySelector('.upload img').src = "../ressources/upload.png";
-        document.querySelector('.create_folder img').src = "../ressources/create_folder.png";
-        theme = "EZDrive"
-        loadFiles()
+
+document.addEventListener('DOMContentLoaded', function() {
+    const themesSelect = document.getElementById('themes-select');
+
+    if (themesSelect) {
+        themesSelect.addEventListener('change', function() {
+            const selectedTheme = this.value;
+            fetch(`../../ajax/setLastTheme.php?last_theme=${selectedTheme}`)
+            window.location.href = '/EZDrive/app/pages/'+selectedTheme+'/index.php?folderId='+window.location.search.split("=")[1];
+        });
+    }})
+
+function getDynamicSegmentFromUrl() {
+    const path = window.location.pathname;
+    const segments = path.split('/').filter(Boolean);
+    const pagesIndex = segments.indexOf('pages');
+
+    if (pagesIndex !== -1 && segments.length > pagesIndex + 1) {
+        return segments[pagesIndex + 1];
     }
-    else {
-        document.getElementById("themeLink").setAttribute("href", "../css/porndrive.css");
-        document.querySelector(".logo").textContent = "PornDrive";
-        document.querySelector('.delete img').src = "../ressources/delete.png";
-        document.querySelector('.download img').src = "../ressources/download.png";
-        document.querySelector('.upload img').src = "../ressources/upload.png";
-        document.querySelector('.create_folder img').src = "../ressources/create_folder.png";
-        theme = "xxx"
-        loadFiles()
-    }
+
+    return null;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('username-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+        });
+
+        document.querySelector('.DeleteAcct').addEventListener('click', function(event) {
+            event.preventDefault();
+        });
+
+        document.querySelector('.close-btn').addEventListener('click', function(event) {
+            document.querySelector('.popup').classList.remove('show');});
+});
+
+document.querySelector('.userName').addEventListener('click', function() {
+    const usernameInput = document.querySelector('#username-input')
+    console.log(usernameInput.value);
+    fetch(`../../ajax/changeUsername.php?username=${encodeURIComponent(usernameInput.value)}`)
+        .then(res => res.text())
+        .then(data => {
+            console.log('data : '+ data);
+        });
+    window.location.reload();
 });

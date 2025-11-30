@@ -1,21 +1,15 @@
-    /* Reset basique */
-
-:root{
-    --main-color: #f19711;
-    --hoover-btn: rgba(208, 86, 255, 0.78);
-    --select-color: rgba(23, 17, 228, 0.55);
-}
-
+/* Reset basique */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family:Trebuchet MS, sans-serif;
+    font-family:Arial, sans-serif;
+    cursor: url('../ressources/pointinghand_eighty.cur'), auto;
 }
 
 /* Fond global */
 html, body, .page-container {
-    background-color: black;
+    background-color: #000000;
     user-select: none;
 }
 
@@ -31,8 +25,8 @@ html, body, .page-container {
     align-items: center;
     padding: 10px 25px;
     background-color: black;
-    color:  #f423e9;;
-    border-bottom: 6px solid var(--main-color);;
+    color: darkorange;
+    border-bottom: 6px solid darkorange;
 }
 
 /* Zones gauche / centre / droite */
@@ -50,16 +44,8 @@ html, body, .page-container {
 }
 
 .header .logo {
-    font-size: 2.7rem;
+    font-size: 2.5rem;
     font-weight: bold;
-    color: #ffffff;
-    text-shadow:
-            0 0 3px #f257fb,
-            0 0 7px #f257fb,
-            0 0 14px #f257fb,
-            0 0 30px #f257fb,
-            0 0 40px #f257fb,
-            0 0 60px #f257fb;
 }
 
 .header .search-bar {
@@ -73,14 +59,14 @@ html, body, .page-container {
 
 .header .search-bar input {
     width: 300px;
+    font-size: 20px;
     transition: width 0.3s;
     height: 75%;
     padding: 0 10px;
-    border-radius: 8px;
+    border-radius: 6px;
     border: none;
     background-color: #333;
-    color: #9438ff;
-    font-size: 20px;
+    color: #fff;
 }
 
 .header .search-bar input:focus {
@@ -93,7 +79,7 @@ html, body, .page-container {
     height: 75%;
     padding: 0 15px;
     border-radius: 6px;
-    background-color: var(--main-color);;
+    background-color: darkorange;
     border: none;
     transition: transform 0.1s, background-color 0.2s;
 }
@@ -103,7 +89,7 @@ html, body, .page-container {
 }
 
 .header .search-bar button:hover {
-    background-color: var(--hoover-btn);
+    background-color: #e07b00;
     color: #fff;
 }
 
@@ -113,6 +99,7 @@ html, body, .page-container {
 }
 
 .header .right button {
+    all: unset;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -133,6 +120,12 @@ html, body, .page-container {
     max-height: 30px;
 }
 
+.header .right button.download:hover,
+.header .right button.upload:hover,
+.header .right button.create_folder:hover,
+.header .right button.delete:hover {
+    background-color: rgba(255,255,255,0.08);
+}
 
 /* Boutons orange */
 .header .right button.profil,
@@ -140,7 +133,7 @@ html, body, .page-container {
     height: 45px;
     padding: 0 15px;
     border-radius: 4px;
-    background-color: var(--main-color);;
+    background-color: darkorange;
     font-size: 1.15rem;
     transition: background-color 0.2s;
     color: black;
@@ -148,18 +141,9 @@ html, body, .page-container {
 
 .header .right button.profil:hover,
 .header .right button.logout:hover {
-    cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-    background-color: var(--hoover-btn);
+    background-color: #c96a00;
     color: #fff;
 }
-
-    .header .right button.download:hover,
-    .header .right button.upload:hover,
-    .header .right button.create_folder:hover,
-    .header .right button.delete:hover {
-        cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-        background-color: rgba(255,255,255,0.08);
-    }
 
 .header .right button:active {
     transform: scale(1.05);
@@ -210,7 +194,7 @@ html, body, .page-container {
     display: block;
     padding: 10px 15px;
     border-radius: 8px;
-    background-color: var(--main-color);;
+    background-color: darkorange;
     color: black;
     margin-bottom: 5px;
     text-align: center;
@@ -223,21 +207,18 @@ label:active {
 }
 
 .filter:checked + label {
-    background-color: rgba(156, 57, 193, 0.78);
-    color: rgb(241, 228, 239);
+    background-color: darkorange;
+    color: white;
 }
 
 .filter:checked + label:hover {
-    cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-    background-color:  var(--hoover-btn);
+    background-color: #d6790a;
     color: black;
 }
 
 .sidebar label:hover {
-    cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-    background-color:  var(--hoover-btn);
-    color: rgb(241, 228, 239);
-;
+    background-color: #d6790a;
+    color: white;
 }
 
 /* Main content */
@@ -248,7 +229,8 @@ label:active {
     grid-auto-rows: 120px;
     gap: 22px;
     padding: 25px;
-    background: linear-gradient(90deg, #6e266e, #395e81);
+    background-image: url('../ressources/xxx/bkg.jpg');
+    background-color: black;
     background-size: cover;
     background-position: center;
     border-top-left-radius: 10px;
@@ -275,8 +257,6 @@ label:active {
 }
 
 .folder-icon:hover, .file-icon:hover {
-    cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-
     background-color: rgba(147, 136, 122, 0.74); }
 
 
@@ -284,7 +264,7 @@ label:active {
     background-color: rgba(147, 136, 122, 0.74); }
 
 .folder-icon.show, .file-icon.show {
-    background-color: var(--select-color);
+    background-color: rgba(251, 7, 7, 0.55);
     box-shadow: 0 0 6px rgb(0, 0, 0);
 }
 
@@ -300,17 +280,18 @@ label:active {
 }
 
 
+
 .popup {
     display: none;
     position: fixed; /* centré à l'écran */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 500px;       /* taille assez grande */
+    width: 500px;
     max-width: 90%;
     background-color: #000000;
     border-radius: 15px;
-    box-shadow: 0 0 30px var(--main-color);;
+    box-shadow: 0 0 30px darkorange; /* Ombre de la boîte en orange */
     overflow: hidden;
     z-index: 1000;
     font-family: Arial, sans-serif;
@@ -323,7 +304,7 @@ label:active {
 
 /* Bandeau header du popup */
 .popup-header {
-    background-color: black; /* rose complémentaire de l'orange */
+    background-color: #000000;
     color: #ffffff;
     padding: 15px 20px;
     font-size: 1.5rem;
@@ -331,57 +312,144 @@ label:active {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 7px solid var(--main-color);;
+    border-bottom: 7px solid darkorange;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
 }
 
 /* Bouton fermer en haut à droite */
 .popup-header .close-btn {
-    background-color: var(--main-color);;
+    background-color: darkorange;
     color: black;
     border: none;
     border-radius: 8px;
     padding: 5px 10px;
     font-size: 1rem;
+    cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
 }
 
 .popup-header .close-btn:hover {
-    cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-    background-color: var(--hoover-btn);
+    background-color: #e07b00;
     color: #fff;
     transform: scale(1.05);
 }
 
-/* Contenu du popup */
+/* --- Styles du Contenu (Fusion des détails avec la palette Orange/Noir) --- */
+
 .popup-content {
-    padding: 20px;
-    color: #000;
+    padding: 30px;
+    color: #ffffff; /* Texte général clair */
     background-color: #000000;
     min-height: 200px;
 }
 
-/* Boutons internes */
+/* Titres dans le contenu (Ex: "Mon Profil") */
+.popup-content h3 {
+    color: darkorange; /* Couleur principale pour le titre */
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    /* Ligne de séparation en orange léger */
+    border-bottom: 1px dashed rgba(255, 140, 0, 0.4);
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(255, 140, 0, 0.1);
+}
+
+/* Style des Labels (Ex: "Mes thèmes :") */
+.popup-content label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+    color: #ff9933; /* Orange plus doux pour les labels */
+    font-weight: bold;
+}
+
+/* Style des Champs de Saisie (Input) et des Sélecteurs (Select) */
+.popup-content input[type="text"],
+.popup-content select {
+    width: 100%;
+    height: 45px;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    /* Bordure subtile en orange */
+    border: 1px solid rgba(255, 140, 0, 0.4);
+    background-color: #1a1a1a; /* Fond sombre */
+    color: #ffffff;
+    font-size: 1rem;
+    /* Ombre intérieure pour un effet de profondeur */
+    box-shadow: inset 0 0 10px rgba(255, 140, 0, 0.08);
+    transition: all 0.2s;
+
+    /* Désactiver l'apparence native pour un style uniforme */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Focus sur les champs */
+.popup-content input[type="text"]:focus,
+.popup-content select:focus {
+    outline: none;
+    border-color: darkorange;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+    background-color: #2b2b2b;
+}
+
+/* Style général des boutons dans le contenu */
 .popup-content button {
-    background-color: var(--main-color);;
+    display: inline-block;
+    background-color: darkorange;
     color: black;
     border: none;
     border-radius: 8px;
-    padding: 8px 15px;
-    margin: 5px;
+    padding: 10px 18px; /* Taille augmentée */
+    margin: 5px 10px 5px 0;
     font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
+    /* Ombre subtile */
+    box-shadow: 0 6px 16px rgba(255, 140, 0, 0.4);
 }
 
 .popup-content button:hover {
-    background-color: var(--hoover-btn);
+    background-color: #e07b00;
     color: #fff;
-    transform: scale(1.05);}
+    transform: translateY(-2px);
+}
+.popup-content button:active {
+    transform: translateY(1px); /* Effet de pression */
+}
 
-    .header .right button,
-    .header .right button:hover,
-    .popup-content button,
-    .popup-content button:hover {
-        cursor: url('../ressources/hooverhand_eighty.cur'), auto;
-    }
+/* Style spécifique pour le bouton Supprimer */
+.popup-content .DeleteAcct {
+    background-color: #cc0000; /* Rouge */
+    box-shadow: 0 6px 16px rgba(255,0,0,0.4);
+}
+.popup-content .DeleteAcct:hover {
+    background-color: #ff3333;
+    color: white;
+}
+.main-content::-webkit-scrollbar {
+    width: 12px;             /* largeur de la barre */
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.07); /* couleur du fond */
+    border-radius: 10px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background-color: darkorange; /* couleur du curseur */
+    border-radius: 10px;
+    border: 2px solid rgba(0,0,0,0.2);  /* contour du curseur */
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+    background-color: #d58018; /* couleur au survol */
+}

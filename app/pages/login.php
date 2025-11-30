@@ -8,16 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     $pdo = Database::getConnection();
-    $stmt = $pdo->prepare("SELECT psw, user_id FROM user WHERE name = :user");
+    $stmt = $pdo->prepare("SELECT psw, user_id, last_theme FROM user WHERE name = :user");
     $stmt->execute([":user" => $username]);
     $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    $lastTheme = $userData['last_theme']??'default';
     if ($userData && password_verify($password, $userData['psw'])) {
         $_SESSION['user'] = [
             'user_id' => $userData['user_id'],
             'name' => $username,
         ];
-        header('Location: index.php?folderId=root');
+        echo $lastTheme;
+        header('Location: '.$lastTheme.'/index.php?folderId=root');
         exit;
     } else {
         $error = 'Nom d\'utilisateur ou mot de passe incorrect.';
@@ -61,6 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="password" id="password" name="password" required>
 
             <button type="submit">Se connecter</button>
+            <p><a href="signup.php">S'inscrire</a></button></p>
         </form>
         <div class="message">
         <?php if (isset($error)) echo "<p style='color: red;'>$error</p>"; ?>

@@ -1,0 +1,162 @@
+<?php
+session_start();
+require_once '../../Database.php';
+
+// Initialisation de $userThemes à un tableau vide. C'est CRUCIAL.
+$userThemes = [];
+
+if(isset($_SESSION['user']['user_id'])) {
+    $pdo = Database::getConnection();
+    $userId = $_SESSION['user']['user_id']; // Variable locale pour la clarté et la réutilisation
+
+    // 1. Vérification du nom d'utilisateur (Logique anti-dédoublement/fraude)
+    $stmt = $pdo->prepare("SELECT name FROM user WHERE user_id = :id");
+    $stmt->execute([":id" => $userId]);
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($userData['name'] != $_SESSION['user']['name']){
+        header("Location: login.php");
+        exit; // Arrêter l'exécution après la redirection
+    }
+
+    // 2. Récupération des thèmes de l'utilisateur
+    $stmt = $pdo->prepare("SELECT themes FROM user WHERE user_id = :id");
+    $stmt->execute([":id" => $userId]);
+
+    // CORRECTION MAJEURE: Récupérer le résultat dans une variable dédiée
+    $themeResult = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // CORRECTION: Utiliser la variable $themeResult, et '[]' si NULL
+    $jsonThemeString = $themeResult['themes'] ?? '[]';
+
+    // Décodage en tableau PHP (liste numériquement indexée)
+    $decodedThemes = json_decode($jsonThemeString, true);
+
+    // Vérifier si le décodage a réussi et que c'est un tableau
+    if (is_array($decodedThemes)) {
+        $userThemes = $decodedThemes;
+    }
+}
+else {
+    header("Location: ../login.php");
+    exit; // Arrêter l'exécution après la redirection
+}
+?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Drive</title>
+    <link rel="stylesheet" href="../../css/default.css" id="themeLink">
+    <link rel="preload" as="image" href="../../ressources/pointinghand_eighty.cur">
+    <script src="../../script/drive.js" defer></script>
+    <link
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="left">
+        <div class="logo">EZDrive</div>
+    </div>
+
+    <div class="center">
+        <div class="search-bar">
+            <input type="text" placeholder="tapez ici...">
+            <button class="search">Rechercher</button>
+        </div>
+    </div>
+
+    <div class="right user-actions">
+        <button class="delete"><img src="../../ressources/default/delete.png" alt="Supprimer" /></button>
+        <button class="create_folder"><img src="../../ressources/default/create_folder.png" alt="Créer" /></button>
+        <button class="upload"><img src="../../ressources/default/upload.png" alt="Importer" /></button>
+        <button class="download"><img src="../../ressources/default/download.png" alt="Exporter" /></button>
+
+        <button class="profil"><?php echo $_SESSION['user']['name']; ?></button>
+        <button class="logout">Déconnexion</button>
+    </div>
+</header>
+
+
+
+<!-- Conteneur principal -->
+<div class="page-container">
+    <!-- Sidebar fixe à gauche -->
+    <aside class="sidebar">
+        <h3>Types de fichiers</h3>
+        <ul>
+            <li>
+                <input type="checkbox" id="filter-images" class="filter">
+                <label for="filter-images">Images</label>
+            </li>
+            <li>
+                <input type="checkbox" id="filter-videos" class="filter">
+                <label for="filter-videos">Vidéos</label>
+            </li>
+            <li>
+                <input type="checkbox" id="filter-documents" class="filter">
+                <label for="filter-documents">Documents</label>
+            </li>
+            <li>
+                <input type="checkbox" id="filter-audio" class="filter">
+                <label for="filter-audio">Audio</label>
+            </li>
+        </ul>
+
+        <h3>Personnalisé</h3>
+        <ul>
+            <li>
+                <input type="checkbox" id="filter-favorites" class="filter">
+                <label for="filter-favorites">Favoris</label>
+            </li>
+            <li>
+                <input type="checkbox" id="filter-shared" class="filter">
+                <label for="filter-shared">Partagés avec moi</label>
+            </li>
+            <li>
+                <input type="checkbox" id="filter-recent" class="filter">
+                <label for="filter-recent">Récents</label>
+            </li>
+        </ul>
+
+    </aside>
+
+    <!-- Contenu principal -->
+    <main class="main-content">
+    </main>
+
+</div><div class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup-header">
+        <h2 id="popupTitle">Mon Profil</h2> <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
+    </div>
+
+    <div class="popup-content">
+        <h3><?php echo $_SESSION['user']['name']; ?></h3>
+
+        <form id="username-form">
+            <label for="username-input" class="visually-hidden">Changer de nom d'utilisateur</label>
+            <input type="text" id="username-input" placeholder="changer de nom d'utilisateur...">
+            <button class="userName" type="submit">Rechercher</button>
+        </form>
+
+        <?php if (!empty($userThemes)): ?>
+            <form>
+                <label for="themes-select">Mes thèmes :</label>
+                <select name="themes" id="themes-select">
+                    <option value="default">default</option>
+                    <?php foreach ($userThemes as $theme): ?>
+                        <option value="<?= htmlspecialchars($theme) ?>"><?= htmlspecialchars($theme) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+        <?php endif; ?>
+
+        <button class="DeleteAcct">Supprimer le compte</button>
+    </div>
+
+</div>
+
+</body>
+</html>
+
