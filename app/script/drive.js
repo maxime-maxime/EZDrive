@@ -4,8 +4,12 @@ let q = false;    // 'w' press
 
 // Initialisation & Global Vars
 const fileInput = document.createElement('input');
+// NOTE: context_menu est défini ici, mais son querySelector n'est pas enveloppé,
+// il est supposé être un élément statique et présent dès l'analyse du script.
 const context_menu = document.querySelector('.context');
 const contentPath = '../../../bdd/content/';
+const folderId = window.location.search.split("=")[1];
+
 fileInput.type = 'file';
 fileInput.multiple = true;
 fileInput.webkitdirectory = true;
@@ -43,7 +47,6 @@ function loadFiles() {
     let theme = getDynamicSegmentFromUrl();
     const previewPath = '../../../bdd/_thumbs/'+theme+'/';
     const folderPreview = previewPath+ 'folder.png';
-    const folderId = window.location.search.split("=")[1];
     const criteria = { type: [] };
     // Types
     if (document.getElementById('filter-images').checked) criteria.type.push("image");
@@ -127,71 +130,6 @@ fileInput.addEventListener('change', async () => {
 });
 
 
-// --- ACTIONS (DOWNLOAD, DELETE, CREATE FOLDER) ---
-
-document.querySelector('.download').addEventListener('click', () => {
-    const icons = document.querySelectorAll('.file-icon.show, .folder-icon.show');
-    const folders = [], files = [];
-    icons.forEach(i => {
-        i.classList.remove('show');
-        if (i.classList.contains('folder-icon')) folders.push(i.dataset.id);
-        else files.push(i.dataset.id);
-    });
-
-    const url = `../../ajax/download.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
-    fetch(url)
-        .then(res => res.json())
-        .then(files => {
-            console.log(files);
-            files.forEach(path => {
-                console.log(contentPath +  path);
-                const a = document.createElement('a');
-                a.href = contentPath + path;
-                a.download = '';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
-        })
-        .catch(err => console.error(err));
-});
-
-
-document.querySelector('.delete').addEventListener('click', () => {
-    const icons = document.querySelectorAll('.file-icon.show, .folder-icon.show');
-    const folders = [], files = [];
-    icons.forEach(i => {
-        i.classList.remove('show');
-        if (i.classList.contains('folder-icon')) folders.push(i.dataset.id);
-        else files.push(i.dataset.id);
-    });
-
-    const url = `../../ajax/delete.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
-    fetch(url)
-        .then(res => res.text())
-        .then(files => {
-            console.log(files);
-            loadFiles();
-        })
-        .catch(err => console.error(err));
-});
-
-
-document.querySelector('.create_folder').addEventListener('click', () => {
-    const folderName = prompt('Nom du dossier :');
-    if (folderName) {
-        const url = `../../ajax/createFolder.php?name=${encodeURIComponent(folderName)}&parentId=${window.location.search.split("=")[1]}`;
-        console.log(url);
-        fetch(url)
-            .then(res => res.text())
-            .then(data => {
-                console.log('data : '+ data);
-                loadFiles();
-            });
-    }
-});
-
-
 // --- INPUT LISTENERS (KEYBOARD & MOUSE) ---
 
 // Ctrl + A gestion
@@ -231,9 +169,11 @@ document.addEventListener('keyup', e => {
     } else if (key === 'q') {
         q = false;
     } else if (key === 'delete' || key === 'supr') {
-        document.querySelector('.delete').click();
+        const icons = document.querySelectorAll('.file-icon.show, .folder-icon.show');
+        deleteContent(icons);
     }
 });
+
 
 // Sélection d'icônes (Clic gauche)
 document.body.addEventListener('click', e => {
@@ -268,6 +208,9 @@ document.addEventListener('contextmenu', (ev) => {
     const icon = ev.target.closest('div.file-icon, div.folder-icon');
     const icons = document.querySelectorAll('.file-icon, .folder-icon');
     icons.forEach(i => i.classList.remove('menuSelected','multiSelected'));
+    document.getElementById('properties').classList.remove('disabled');
+    document.getElementById('rename').classList.remove('disabled');
+
     if(icon){
         update_menu_pos(ev.clientX, ev.clientY);
         context_menu.style.visibility = 'visible';
@@ -285,48 +228,167 @@ document.addEventListener('contextmenu', (ev) => {
         }
     }
 
+
 });
 
+function deleteContent(icons){
+    const folders = [], files = [];
+    icons.forEach(i => {
+        i.classList.remove('show');
+        if (i.classList.contains('folder-icon')) folders.push(i.dataset.id);
+        else files.push(i.dataset.id);
+    });
+
+    const url = `../../ajax/delete.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
+    fetch(url)
+        .then(res => res.text())
+        .then(files => {
+            console.log(files);
+            loadFiles();
+        })
+        .catch(err => console.error(err));
+}
 
 // --- INITIALISATION & CONFIGURATION ---
 
-document.querySelector('.upload').addEventListener('click', () => fileInput.click());
-
-// Filtres
-document.querySelectorAll('.filter').forEach(filter => filter.addEventListener('change', loadFiles));
-
-// Logout bouton
-document.querySelector('.logout').addEventListener('click', logout);
-
-// Charger les fichiers au chargement de la page
-window.onload= loadFiles;
-
-document.querySelector(".profil").addEventListener("click", () => {
-    document.querySelector(".popup").classList.add("show");
-});
-
-document.querySelector("#copy").addEventListener("click", () => {
-});
-
-document.querySelector("#paste").addEventListener("click", () => {
-});
-
-document.querySelector("#properties").addEventListener("click", () => {
-});
-
-
 document.addEventListener('DOMContentLoaded', function() {
-    const themesSelect = document.getElementById('themes-select');
 
+    // 1. ÉCOUTEURS D'ACTIONS PRINCIPALES (Menu contextuel et en-tête)
+
+    document.querySelector('.download').addEventListener('click', () => {
+        const icons = document.querySelectorAll('.file-icon.show, .folder-icon.show');
+        const folders = [], files = [];
+        icons.forEach(i => {
+            i.classList.remove('show');
+            if (i.classList.contains('folder-icon')) folders.push(i.dataset.id);
+            else files.push(i.dataset.id);
+        });
+
+        const url = `../../ajax/download.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
+        fetch(url)
+            .then(res => res.json())
+            .then(files => {
+                console.log(files);
+                files.forEach(path => {
+                    console.log(contentPath +  path);
+                    const a = document.createElement('a');
+                    a.href = contentPath + path;
+                    a.download = '';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                });
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.querySelector('#setFavorite').addEventListener('click', () => {
+        console.log("here - SetFavorite fonctionne!");
+        const icons = document.querySelectorAll('.file-icon.show, .folder-icon.show');
+        const folders = [], files = [];
+        icons.forEach(i => {
+            if (i.classList.contains('folder-icon')) folders.push(i.dataset.id);
+            else files.push(i.dataset.id);
+        });
+        const url = `../../ajax/setFavorite.php?folders=${encodeURIComponent(folders.join(','))}&files=${encodeURIComponent(files.join(','))}`;
+        fetch(url)
+            .then(res => res.text())
+            .then(files => {
+                console.log(files);
+                loadFiles();
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.querySelector('#rename').addEventListener('click', () => {
+        const newName = prompt('choisissez un nouveau nom :');
+        if (!newName) return;
+        const icons = document.querySelectorAll('.file-icon.menuSelected, .folder-icon.menuSelected');
+        const folders = {}, files = {};
+        icons.forEach(i => {
+            if (i.classList.contains('folder-icon')) folders[i.dataset.id] = newName;
+            else files[i.dataset.id] = newName;
+        });
+        const url = `../../ajax/rename.php?parent_id=${window.location.search.split("=")[1]}&folders=${encodeURIComponent(JSON.stringify(folders))}&files=${encodeURIComponent(JSON.stringify(files))}`;
+        fetch(url)
+            .then(res => res.text())
+            .then(files => {
+                console.log(files);
+                loadFiles();
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.querySelector('.selectAll').addEventListener('click', (e) => {
+        const icons = document.querySelectorAll('.file-icon, .folder-icon');
+        icons.forEach(i => {e.stopPropagation();i.classList.add("show");console.log(i);});
+    });
+
+    document.querySelector('#delete').addEventListener('click', (e) => {
+        const icons = document.querySelectorAll('.file-icon.multiSelected, .folder-icon.multiSelected, ' + '.file-icon.show.multiSelected, .folder-icon.show.multiSelected');
+        deleteContent(icons);
+    });
+
+    document.querySelector('.create_folder').addEventListener('click', (e) => {
+        const folderName = prompt('Nom du dossier :');
+        if (folderName) {
+            const url = `../../ajax/createFolder.php?name=${encodeURIComponent(folderName)}&parentId=${window.location.search.split("=")[1]}`;
+            console.log(url);
+            fetch(url)
+                .then(res => res.text())
+                .then(data => {
+                    console.log('data : '+ data);
+                    loadFiles();
+                });
+        }
+    });
+
+    // 2. ÉCOUTEURS D'ACTIONS SIMPLES ET FILTRES
+
+    document.querySelector('.upload').addEventListener('click', () => fileInput.click());
+
+    // Filtres
+    document.querySelectorAll('.filter').forEach(filter => filter.addEventListener('change', loadFiles));
+
+    // Logout bouton
+    document.querySelector('.logout').addEventListener('click', logout);
+
+    // Popup et profil
+    document.querySelector(".profil").addEventListener("click", (e) => {
+        document.querySelector(".popup").classList.add("show");
+    });
+
+    document.querySelector("#copy").addEventListener("click", (e) => {
+    });
+
+    document.querySelector("#paste").addEventListener("click", (e) => {
+    });
+
+    document.querySelector("#properties").addEventListener("click", (e) => {
+    });
+
+    document.querySelector(".userName").addEventListener("click", function() {
+        const usernameInput = document.querySelector('#username-input')
+        console.log(usernameInput.value);
+        fetch(`../../ajax/changeUsername.php?username=${encodeURIComponent(usernameInput.value)}`)
+            .then(res => res.text())
+            .then(data => {
+                console.log('data : '+ data);
+            });
+        window.location.reload();
+    });
+
+    // Logique thèmes (était déjà dans un DOMContentLoaded)
+    const themesSelect = document.getElementById('themes-select');
     if (themesSelect) {
         themesSelect.addEventListener('change', function() {
             const selectedTheme = this.value;
             fetch(`../../ajax/setLastTheme.php?last_theme=${selectedTheme}`)
             window.location.href = '/EZDrive/app/pages/'+selectedTheme+'/index.php?folderId='+window.location.search.split("=")[1];
         });
-    }})
+    }
 
-document.addEventListener('DOMContentLoaded', function() {
+    // Logique formulaire et fermeture popup (était déjà dans un DOMContentLoaded)
     document.getElementById('username-form').addEventListener('submit', function(event) {
         event.preventDefault();
     });
@@ -336,16 +398,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.querySelector('.close-btn').addEventListener('click', function(event) {
-        document.querySelector('.popup').classList.remove('show');});
-});
+        document.querySelector('.popup').classList.remove('show');
+    });
 
-document.querySelector('.userName').addEventListener('click', function() {
-    const usernameInput = document.querySelector('#username-input')
-    console.log(usernameInput.value);
-    fetch(`../../ajax/changeUsername.php?username=${encodeURIComponent(usernameInput.value)}`)
-        .then(res => res.text())
-        .then(data => {
-            console.log('data : '+ data);
-        });
-    window.location.reload();
+    // 3. CHARGEMENT INITIAL DES FICHIERS
+    loadFiles();
 });

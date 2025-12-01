@@ -138,4 +138,28 @@ class Folder
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public static function togleFavorite(int $id): void
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT favorite FROM folder WHERE id = :id");
+        $stmt->execute([":id" => $id]);
+        $favorite = $stmt->fetchColumn();
+        $favorite = ($favorite==1) ? 0 : 1;
+        $stmt = $pdo->prepare("UPDATE folder SET favorite = :favorite WHERE id = :id");
+        $stmt->execute([
+            ":favorite" => $favorite,
+            ":id" => $id
+        ]);
+    }
+    public static function rename(int $id, string $newName ):void{
+        $path = Folder::getById($id)[0]['path'];
+        $path = dirname($path).'\\'.$newName;
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE folder SET name = :newname, path = :path WHERE id = :id");
+        $stmt->execute([
+            ":newname" => $newName,
+            ":id" => $id,
+            ":path" => $path
+        ]);
+    }
 }

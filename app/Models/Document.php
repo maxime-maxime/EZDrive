@@ -172,4 +172,29 @@ class Document
         ]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public Static function togleFavorite(int $id): void
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT favorite FROM document WHERE id = :id");
+        $stmt->execute([":id" => $id]);
+        $favorite = $stmt->fetchColumn();
+        $favorite = ($favorite==1) ? 0 : 1;
+
+        $stmt = $pdo->prepare("UPDATE document SET favorite = :favorite WHERE id = :id");
+        $stmt->execute([
+            ":favorite" => $favorite,
+            ":id" => $id
+        ]);
+    }
+
+    public static function rename(int $id, string $newName): void
+    {
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("UPDATE document SET name = :newname WHERE id = :id");
+        $stmt->execute([
+            ":newname" => $newName,
+            ":id" => $id
+        ]);
+    }
+
 }

@@ -50,21 +50,35 @@ class DocumentController
         global $invalidChars;
         $filename = pathinfo($name, PATHINFO_FILENAME);
         $ext = pathinfo($name, PATHINFO_EXTENSION);
-
         foreach ($invalidChars as $char) {
             if (str_contains($filename, $char)) {
                 $filename = str_replace($char, '_', $filename);
             }
         }
         $existingNames = array_column(self::listTuplesToPrint(folderId: $folderId), 'name');
-        $newName = $name;
+        $newName = $filename;
         $i = 1;
-        while (in_array($newName, $existingNames)) {
+        while (in_array($newName.'.'.$ext, $existingNames)) {
             $newName = $filename . ' (' . $i . ')';
             $i++;
         }
         return ['name'=>$newName,
                 'ext'=>$ext];
     }
+    public static function togleFavorite(int $id): void
+    {
+        Document::togleFavorite($id);
+    }
 
+    public static function rename(int $id, string $newName):array{
+        $fileInfo = Document::getById($id);
+        $newName=$newName.".".pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
+        $newName = implode(".",self::getUniqueName($newName, $fileInfo['folder_id']));
+        Document::rename($id, $newName);
+        return [
+            "path" => Document::getById($id)['path'],
+            "name" => $newName,
+            "previousName" => $fileInfo['name']
+        ];
+    }
 }

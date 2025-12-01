@@ -172,6 +172,26 @@ class FolderController
         return $parentId;
     }
 
+    public static function togleFavorite(int $id): void
+    {
+        Folder::togleFavorite($id);
+    }
+
+    public static function rename(int $id, string $name, int $parentId) :array
+    {
+        $previousName = Folder::getById($id)[0]['name'];
+        $newName = self::getUniqueFolderName($name, $parentId);
+        Folder::rename($id, $newName);
+
+
+        return [
+            'path' => Folder::getById($id)[0]['path'],
+            'name' => $newName,
+            'previousName' =>$previousName
+        ];
+    }
+
+
 }
 
 

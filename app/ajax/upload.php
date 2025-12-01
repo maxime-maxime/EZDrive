@@ -75,11 +75,11 @@ if(isset($meta['webdir'])){
     $ext = $new['ext'] ?? [];
 
 
-    $rpath = ($pathString !== '' ? $pathString . '/' : '') . $newName;
+    $rpath = ($pathString !== '' ? $pathString . '/' : '') . $newName . '.' . $ext;
 
 
     $document = [
-        'name' => $newName,
+        'name' => $newName.'.'.$ext,
         'path' => $rpath,
         'folder_id' => $folderId,
         'type' => $extToType[$ext] ?? 'document',

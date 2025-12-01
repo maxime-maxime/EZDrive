@@ -67,7 +67,7 @@ else {
     </div>
 
     <div class="right user-actions">
-        <button class="delete"><img src="../../ressources/default/delete.png" alt="Supprimer" /></button>
+        <button class="selectAll"><img src="../../ressources/default/selectAll.png" alt="Tout Sélectionner" /></button>
         <button class="create_folder"><img src="../../ressources/default/create_folder.png" alt="Créer" /></button>
         <button class="upload"><img src="../../ressources/default/upload.png" alt="Importer" /></button>
         <button class="download"><img src="../../ressources/default/download.png" alt="Exporter" /></button>
@@ -158,14 +158,13 @@ else {
 
 <div class="context-menu">
     <ul class="context">
-        <li class="contextLink"><img src="../../ressources/default/copy.png" alt="copier" /><span class="contextLabel" id="copy" >copier</span></li>
-        <li class="contextLink"><img src="../../ressources/default/paste.png" alt="coller" /><span class="contextLabel" id="paste">coller</span></li>
-        <li class="contextLink"><img src="../../ressources/default/cut.png" alt="couper" /><span class="contextLabel" id="cut">couper</span></li>
-        <li class="contextLink"><img src="../../resso urces/default/properties.png" alt="propriétés" /><span class="contextLabel" id="properties">propriétés</span></li>
-        <li class="contextLink"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel" id="delete">supprimer</span></li>
-        <li class="contextLink"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel" id="rename">renommer</span></li>
-        <li class="contextLink"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel" id="favorites">favori</span></li>
-        <li class="contextLink"><img src="../../ressources/default/selectAll.png" alt="tout selectionner" /><span class="contextLabel" id="selectAll">tout sélectionner</span></li>
+        <li class="contextLink" id="copy" ><img src="../../ressources/default/copy.png" alt="copier" /><span class="contextLabel">copier</span></li>
+        <li class="contextLink" id="paste"><img src="../../ressources/default/paste.png" alt="coller" /><span class="contextLabel">coller</span></li>
+        <li class="contextLink id="cut"><img src="../../ressources/default/cut.png" alt="couper" /><span class="contextLabel">couper</span></li>
+        <li class="contextLink" id="properties"><img src="../../ressources/default/properties.png" alt="propriétés" /><span>propriétés</span></li>
+        <li class="contextLink" id="delete"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel">supprimer</span></li>
+        <li class="contextLink" id="rename"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel">renommer</span></li>
+        <li class="contextLink" id="setFavorite"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel">favori</span></li>
     </ul>
 </div>
 
