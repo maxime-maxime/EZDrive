@@ -23,6 +23,8 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 $filePath = $file['path'];
                 $previousName = $file['previousName'];
                 $newName = $file['name'];
+                echo '  new name : '.$newName;
+                echo 'previous name : '.$previousName;
 
                 $oldpath = $rootPath . dirname($filePath)."\\".$previousName;
                 $oldpath =  str_replace("/", "\\", $oldpath);

@@ -40,10 +40,14 @@ class DocumentController
                 'name' => $row['name'],
                 'path' => $row['path'],
                 'preview' => $row['preview'],
-                'owner' =>$row['owner']
+                'owner' =>$row['owner'],
             ];
         }
         return $documents;
+    }
+
+    public static function getById(int $userId): array{
+        return Document::getById($userId);
     }
 
     public static function getUniqueName(string $name, int $folderId): array {
@@ -73,8 +77,10 @@ class DocumentController
     public static function rename(int $id, string $newName):array{
         $fileInfo = Document::getById($id);
         $newName=$newName.".".pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
-        $newName = implode(".",self::getUniqueName($newName, $fileInfo['folder_id']));
-        Document::rename($id, $newName);
+        $path = $fileInfo['path'];
+        $path = dirname($path)."\\".$newName;
+        $newName = implode(".",self::getUniqueName($newName, $fileInfo['folder_id'], $path));
+        Document::rename($id, $newName,$path);
         return [
             "path" => Document::getById($id)['path'],
             "name" => $newName,

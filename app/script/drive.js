@@ -44,6 +44,8 @@ const update_menu_pos = (x, y) => {
 // --- FILE LOADING / RENDERING ---
 
 function loadFiles() {
+    document.querySelectorAll('.popup')
+        .forEach(i => i.classList.remove('show'));
     let theme = getDynamicSegmentFromUrl();
     const previewPath = '../../../bdd/_thumbs/'+theme+'/';
     const folderPreview = previewPath+ 'folder.png';
@@ -135,7 +137,6 @@ fileInput.addEventListener('change', async () => {
 // Ctrl + A gestion
 document.addEventListener('keydown', e => {
     const key = e.key.toLowerCase();
-
     if (key === 'control') {
         ctrl = true;
         document.querySelectorAll('.file-icon, .folder-icon')
@@ -144,6 +145,9 @@ document.addEventListener('keydown', e => {
         a = true;
     } else if (key === 'q') {
         q = true;
+    } else if (key === 'escape') {
+        document.querySelectorAll('.popup')
+            .forEach(i => i.classList.remove('show'));
     }
 
     if (ctrl && q) {
@@ -178,6 +182,11 @@ document.addEventListener('keyup', e => {
 // Sélection d'icônes (Clic gauche)
 document.body.addEventListener('click', e => {
     if (e.button === 0){
+        context_menu.style.visibility = null ;
+        if (e.target.closest('.popup')) {
+                return;
+            }
+        document.querySelectorAll('.popup').forEach(i => i.classList.remove('show'));
         const icon = e.target.closest('div.file-icon, div.folder-icon');
         const icons = document.querySelectorAll('.file-icon, .folder-icon');
         icons.forEach(i => i.classList.remove('menuSelected', 'multiSelected'));
@@ -189,7 +198,6 @@ document.body.addEventListener('click', e => {
         } else {
             icon.classList.toggle('show');
         }
-        context_menu.style.visibility = null ;
     }
 });
 
@@ -210,6 +218,8 @@ document.addEventListener('contextmenu', (ev) => {
     icons.forEach(i => i.classList.remove('menuSelected','multiSelected'));
     document.getElementById('properties').classList.remove('disabled');
     document.getElementById('rename').classList.remove('disabled');
+    document.querySelectorAll('.popup')
+        .forEach(i => i.classList.remove('show'));
 
     if(icon){
         update_menu_pos(ev.clientX, ev.clientY);
@@ -226,6 +236,9 @@ document.addEventListener('contextmenu', (ev) => {
             icon.classList.add('multiSelected');
             icon.classList.add('menuSelected');
         }
+    }
+    else{
+        document.querySelector(".context").style.visibility = null ;
     }
 
 
@@ -300,10 +313,11 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(err => console.error(err));
     });
 
-    document.querySelector('#rename').addEventListener('click', () => {
+    document.querySelector('#rename').addEventListener('click', (e) => {
+        const icons = document.querySelectorAll('.file-icon.menuSelected, .folder-icon.menuSelected');
+        if (icons.length === 0) return;
         const newName = prompt('choisissez un nouveau nom :');
         if (!newName) return;
-        const icons = document.querySelectorAll('.file-icon.menuSelected, .folder-icon.menuSelected');
         const folders = {}, files = {};
         icons.forEach(i => {
             if (i.classList.contains('folder-icon')) folders[i.dataset.id] = newName;
@@ -314,9 +328,9 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.text())
             .then(files => {
                 console.log(files);
-                loadFiles();
             })
             .catch(err => console.error(err));
+        loadFiles();
     });
 
     document.querySelector('.selectAll').addEventListener('click', (e) => {
@@ -353,10 +367,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // Logout bouton
     document.querySelector('.logout').addEventListener('click', logout);
 
+
+
     // Popup et profil
     document.querySelector(".profil").addEventListener("click", (e) => {
-        document.querySelector(".popup").classList.add("show");
+        e.stopPropagation();
+        document.querySelector(".context").style.visibility = null ;
+        document.querySelectorAll('.popup')
+            .forEach(i => i.classList.remove('show'));
+        document.querySelector("#profilInfo").classList.add("show");
     });
+
+
+    document.querySelector("#properties").addEventListener("click", (e) => {
+        const icon = document.querySelector('.menuSelected')
+        e.stopPropagation();
+        if(icon===null){
+            document.querySelector(".context").style.visibility = null ;
+            return;
+        }
+            let folderId = null;
+            let fileId = null;
+            if(icon.classList.contains('folder-icon'))folderId = icon.dataset.id;
+            else fileId = icon.dataset.id;
+        const url = `../../ajax/getInfos.php?folderId=${encodeURIComponent(folderId)}&fileId=${encodeURIComponent(fileId)}`
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                const container = document.querySelector('#fileInfo .popup-content table');
+                container.innerHTML = '';
+                Object.entries(data).forEach(([key, value]) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${key}</td>
+                        <td>${value}</td>
+                    `;
+                    container.appendChild(row);
+                });
+            });
+        document.querySelectorAll('.popup')
+            .forEach(i => i.classList.remove('show'));
+        document.querySelector(".context").style.visibility = null ;
+
+        document.querySelector("#fileInfo").classList.add("show");
+    });
+    document.querySelector("#fileInfo .close-btn").addEventListener("click",(e) =>{
+        document.querySelector("#fileInfo").classList.remove("show");
+    })
 
     document.querySelector("#copy").addEventListener("click", (e) => {
     });
@@ -364,10 +421,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector("#paste").addEventListener("click", (e) => {
     });
 
-    document.querySelector("#properties").addEventListener("click", (e) => {
-    });
 
-    document.querySelector(".userName").addEventListener("click", function() {
+    document.querySelector(".userName").addEventListener("click", function(e) {
+        e.stopPropagation();
         const usernameInput = document.querySelector('#username-input')
         console.log(usernameInput.value);
         fetch(`../../ajax/changeUsername.php?username=${encodeURIComponent(usernameInput.value)}`)
@@ -381,7 +437,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Logique thèmes (était déjà dans un DOMContentLoaded)
     const themesSelect = document.getElementById('themes-select');
     if (themesSelect) {
-        themesSelect.addEventListener('change', function() {
+        themesSelect.addEventListener('change', function(e) {
+            e.stopPropagation();
             const selectedTheme = this.value;
             fetch(`../../ajax/setLastTheme.php?last_theme=${selectedTheme}`)
             window.location.href = '/EZDrive/app/pages/'+selectedTheme+'/index.php?folderId='+window.location.search.split("=")[1];
@@ -390,14 +447,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Logique formulaire et fermeture popup (était déjà dans un DOMContentLoaded)
     document.getElementById('username-form').addEventListener('submit', function(event) {
+        event.stopPropagation()
         event.preventDefault();
     });
 
     document.querySelector('.DeleteAcct').addEventListener('click', function(event) {
+        event.stopPropagation()
         event.preventDefault();
     });
 
     document.querySelector('.close-btn').addEventListener('click', function(event) {
+        event.stopPropagation()
         document.querySelector('.popup').classList.remove('show');
     });
 

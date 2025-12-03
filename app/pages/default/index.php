@@ -48,7 +48,7 @@ else {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Drive</title>
-    <link rel="stylesheet" href="../../css/default.css" id="themeLink">
+    <link rel="stylesheet" href="../../css/default.css">
     <link rel="preload" as="image" href="../../ressources/pointinghand_eighty.cur">
     <script src="../../script/drive.js" defer></script>
 </head>
@@ -125,7 +125,7 @@ else {
     <main class="main-content">
     </main>
 
-</div><div class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+</div><div class="popup" id="profilInfo" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
     <div class="popup-header">
         <h2 id="popupTitle">Mon Profil</h2> <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
     </div>
@@ -160,12 +160,23 @@ else {
     <ul class="context">
         <li class="contextLink" id="copy" ><img src="../../ressources/default/copy.png" alt="copier" /><span class="contextLabel">copier</span></li>
         <li class="contextLink" id="paste"><img src="../../ressources/default/paste.png" alt="coller" /><span class="contextLabel">coller</span></li>
-        <li class="contextLink id="cut"><img src="../../ressources/default/cut.png" alt="couper" /><span class="contextLabel">couper</span></li>
+        <li class="contextLink" id="cut"><img src="../../ressources/default/cut.png" alt="couper" /><span class="contextLabel">couper</span></li>
         <li class="contextLink" id="properties"><img src="../../ressources/default/properties.png" alt="propriétés" /><span>propriétés</span></li>
         <li class="contextLink" id="delete"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel">supprimer</span></li>
         <li class="contextLink" id="rename"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel">renommer</span></li>
         <li class="contextLink" id="setFavorite"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel">favori</span></li>
     </ul>
+</div>
+
+<div class="popup" id="fileInfo" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup-header">
+        <h2 id="popupTitle">Propriétés</h2>
+        <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
+    </div>
+    <div class="popup-content">
+        <table>
+        </table>
+    </div>
 </div>
 
 </body>

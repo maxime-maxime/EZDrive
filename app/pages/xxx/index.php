@@ -55,7 +55,7 @@ else {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Drive</title>
-    <link rel="stylesheet" href="../../css/xxx.css" id="themeLink">
+    <link rel="stylesheet" href="../../css/xxx.css">
     <link rel="preload" as="image" href="../../ressources/pointinghand_eighty.cur">
     <script src="../../script/drive.js" defer></script>
     <link
@@ -75,10 +75,11 @@ else {
     </div>
 
     <div class="right user-actions">
-        <button class="delete"><img src="../../ressources/xxx/delete.png" alt="Supprimer" /></button>
+        <button class="selectAll"><img src="../../ressources/default/selectAll.png" alt="Tout Sélectionner" /></button>
         <button class="create_folder"><img src="../../ressources/xxx/create_folder.png" alt="Créer" /></button>
-        <button class="download"><img src="../../ressources/xxx/download.png" alt="Exporter" /></button>
         <button class="upload"><img src="../../ressources/xxx/upload.png" alt="Importer" /></button>
+        <button class="download"><img src="../../ressources/xxx/download.png" alt="Exporter" /></button>
+
         <button class="profil"><?php echo $_SESSION['user']['name']; ?></button>
         <button class="logout">Déconnexion</button>
     </div>
@@ -132,17 +133,18 @@ else {
     <main class="main-content">
     </main>
 
-</div><div class="popup" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+</div><div class="popup" id="profilInfo" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
     <div class="popup-header">
-        <h2 id="popupTitle">J'ai plus de 18 ans</h2> <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
+        <h2 id="popupTitle">Mon Profil</h2> <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
     </div>
 
     <div class="popup-content">
         <h3><?php echo $_SESSION['user']['name']; ?></h3>
+
         <form id="username-form">
-            <label for="username-input" class="visually-hidden">Changer de nom d'utilisateur</label>
-            <input type="text" id="username-input" placeholder="changer de nom d'utilisateur...">
-            <button class="userName" type="submit">Changer</button>
+            <label for="username-input" class="visually-hidden">Changer de nom d'utilisateur : </label>
+            <input type="text" id="username-input" placeholder="un exemple de nom d'utilisateur...">
+            <button class="userName" type="submit">changer</button>
         </form>
 
         <?php if (!empty($userThemes)): ?>
@@ -151,29 +153,43 @@ else {
                 <select name="themes" id="themes-select">
                     <option value="xxx">xxx</option>
                     <option value="default">default</option>
-                    <?php foreach ($userThemes as $theme): if($theme !== 'xxx'){?>
-                        <option value="<?= htmlspecialchars($theme) ?>"><?= htmlspecialchars($theme) ?></option>
-                    <?php }endforeach; ?>
+                    <?php foreach ($userThemes as $theme):
+                        if ($theme !== 'default' && $theme !== 'xxx'): ?>
+                            <option value="<?= htmlspecialchars($theme) ?>"><?= htmlspecialchars($theme) ?></option>
+                        <?php endif; endforeach; ?>
                 </select>
             </form>
         <?php endif; ?>
+
 
         <button class="DeleteAcct">Supprimer le compte</button>
     </div>
 
 </div>
+
 <div class="context-menu">
     <ul class="context">
-        <li class="contextLink"><img src="../../ressources/xxx/copy.png" alt="copier" /><span class="contextLabel" id="copy" >copier</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/paste.png" alt="coller" /><span class="contextLabel" id="paste">coller</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/cut.png" alt="couper" /><span class="contextLabel" id="cut">couper</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/properties.png" alt="propriétés" /><span class="contextLabel" id="properties">propriétés</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/delete.png" alt="supprimer" /><span class="contextLabel" id="delete">supprimer</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/rename.png" alt="renomer" /><span class="contextLabel" id="rename">renommer</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/favorite.png" alt="favoris" /><span class="contextLabel" id="favorites">favori</span></li>
-        <li class="contextLink"><img src="../../ressources/xxx/selectAll.png" alt="tout selectionner" /><span class="contextLabel" id="selectAll">tout sélectionner</span></li>
+        <li class="contextLink" id="copy" ><img src="../../ressources/default/copy.png" alt="copier" /><span class="contextLabel">copier</span></li>
+        <li class="contextLink" id="paste"><img src="../../ressources/default/paste.png" alt="coller" /><span class="contextLabel">coller</span></li>
+        <li class="contextLink" id="cut"><img src="../../ressources/default/cut.png" alt="couper" /><span class="contextLabel">couper</span></li>
+        <li class="contextLink" id="properties"><img src="../../ressources/default/properties.png" alt="propriétés" /><span>propriétés</span></li>
+        <li class="contextLink" id="delete"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel">supprimer</span></li>
+        <li class="contextLink" id="rename"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel">renommer</span></li>
+        <li class="contextLink" id="setFavorite"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel">favori</span></li>
     </ul>
 </div>
+
+<div class="popup" id="fileInfo" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+    <div class="popup-header">
+        <h2 id="popupTitle">Propriétés</h2>
+        <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
+    </div>
+    <div class="popup-content">
+        <table>
+        </table>
+    </div>
+</div>
+
 </body>
 </html>
 

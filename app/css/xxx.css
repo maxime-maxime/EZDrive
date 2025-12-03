@@ -25,7 +25,7 @@
     --spacing-lg: 25px;
 
     /* --- RAYONS DE BORDURE --- */
-    --border-radius-sm: 6px;
+    --border-radius-sm: 8px;
     --border-radius-md: 10px;
     --border-radius-lg: 15px;
 
@@ -33,6 +33,9 @@
     --transition-speed-fast: 0.1s;
     --transition-speed-normal: 0.2s;
     --transition-speed-slow: 0.3s;
+
+    --iconFilter: invert(70%) sepia(90%) saturate(600%) hue-rotate(345deg) brightness(100%) contrast(100%);    /* Suppression de l'ombre/glow néon */
+
 }
 
 /* Reset basique */
@@ -362,31 +365,89 @@ label:active {
  * ====================================================================
  * 5. Context Menu Styles
  * ====================================================================
+
+ */
+/**
+ * ====================================================================
+ * 5. Context Menu Styles (Refonte : Sobre, Contour Gris Épais, Sans Néon)
+ * ====================================================================
  */
 .context{
-    width:200px;
-    margin : 0;
-    padding : 0;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    background-color: white;
+    width: 200px;
+    margin: 0;
+    padding: 0;
+    /* Fond noir profond */
+    background-color: var(--bg-dark);
     position: fixed;
     visibility: hidden;
     z-index: 1000;
+
+    /* Bordure : 1px plus fine et en Gris clair */
+    border: 5px solid rgba(142, 142, 142, 0.33);
+    border-radius: var(--border-radius-sm);
+
+    /* Ombre subtile, sans aucun glow néon. Utilisation d'une ombre noire/grise */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.75);
 }
 
+/* --- Styles des Liens/Options --- */
 .contextLink{
     list-style-type: none;
-    padding: 0.6em 1em;
+    padding: 0.8em 1.2em;
     font-size: 1em;
-    font-family:'Inter', sans-serif;
+    /* Police standard, épaisseur augmentée */
+    font-family: Arial, sans-serif;
+    font-weight: bold; /* Police épaissie */
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    /* Texte Blanc/Gris clair pour le contraste */
+    color: var(--text-light);
+    transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast), box-shadow var(--transition-speed-fast);
 }
 
+/* --- Style des Icônes --- */
+.contextLink img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    /* Suppression du filtre néon, on utilise un filtre blanc/gris */
+    filter: var(--iconFilter);
+    text-shadow: none;
+}
+
+/* --- Effet de Survol (Hover) - Fait ressortir l'option sans néon */
 .contextLink:hover{
-    background-color: rgba(94, 84, 103, 0.56);
-    color: white;
+    /* Utilisation de l'Orange principal pour le fond au survol */
+    background-color: var(--main-color);
+    /* Texte Noir pour le contraste sur l'orange */
+    color: var(--text-dark);
+    /* Ombre de survol simple */
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+    --iconFilter: brightness(0) invert(1);
+;
 }
 
+/* Séparateur pour les options */
+.contextLink + .contextLink {
+    /* Ligne de séparation fine en gris foncé */
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
 
+/* Option désactivée */
+.contextLink.disabled {
+    color: #444;
+    pointer-events: none;
+    font-weight: normal;
+}
+.contextLink.disabled img {
+    /* Rend l'icône grise et faible */
+    filter: grayscale(100%) brightness(50%);
+}
+.contextLink.disabled:hover {
+    background-color: transparent;
+    box-shadow: none;
+}
 /**
  * ====================================================================
  * 6. Popup / Modal Styles
@@ -455,6 +516,32 @@ label:active {
     background-color: var(--bg-dark);
     min-height: 200px;
 }
+.popup#fileInfo{
+    width: 500px;
+}
+
+#fileInfo .popup-content{
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: center;     /* centre verticalement */
+    height: 100%;
+}
+
+#fileInfo .popup-content table {
+    width: 100%;          /* occupe toute la largeur du conteneur */
+    table-layout: fixed;
+    border-collapse: collapse; /* supprime les doubles bordures et marges internes */
+    border-spacing: 0;    /* au cas où border-collapse n'est pas utilisé */
+}
+#fileInfo .popup-content table td,
+#fileInfo .popup-content table th {
+    padding: 5px 10px;
+    text-align: left;
+    word-break: break-word;
+    white-space: normal;
+    max-width: 200px;
+}
+
 
 /* Titres dans le contenu (Ex: "Mon Profil") */
 .popup-content h3 {

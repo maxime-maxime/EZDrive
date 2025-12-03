@@ -187,11 +187,13 @@ class Document
         ]);
     }
 
-    public static function rename(int $id, string $newName): void
-    {
+    public static function rename(int $id, string $newName, string $path): void
+    {   echo 'paaath : '.$path;
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("UPDATE document SET name = :newname WHERE id = :id");
+        $newPath = $path . $newName;
+        $stmt = $pdo->prepare("UPDATE document SET name = :newname, path = :newpath WHERE id = :id");
         $stmt->execute([
+            ":newpath" => $newPath,
             ":newname" => $newName,
             ":id" => $id
         ]);

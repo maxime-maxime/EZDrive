@@ -6,7 +6,7 @@
 :root {
     /* --- COULEURS NÉON/ACCENTS VIFS --- */
     --main-color: rgba(62, 36, 156, 0.44);      /* Violet signature (Boutons, Glow Principal) */
-    --hoover-btn: rgba(96, 35, 189, 0.73);      /* Magenta/Rose Vif (Hover Principal) */
+    --hoover-btn: rgba(107, 41, 207, 0.73);      /* Magenta/Rose Vif (Hover Principal) */
     --neon-accent: #3f9fff;     /* Bleu Électrique/Cyan Riche (Titres, Accent) */
     --neon-glow: #1df2ff;       /* Cyan VIF pour les effets de GLOW TRES FORTs */
     --select-color: rgba(29, 187, 255, 0.35); /* Cyan Plasma */
@@ -145,21 +145,21 @@ html, body, .page-container {
 
 /* --- BOUTON RECHERCHER (Glow Rétro-Néon) --- */
 .header .search-bar button {
-    font-size: 14px;
+    font-size: 1.1rem;
     height: 75%;
     padding: 0 15px;
     border-radius: var(--border-radius-sm);
-    background-color: var(--main-color);
+    background-color: #8f26a5;
     border: 1px solid var(--main-color);
-    color: #dab5ff;
+    color: #000000;
     font-weight: bold;
     /* Ombre/Glow Néon Puissant */
-    box-shadow: 0 0 10px rgba(154,50,255,0.8), 0 0 5px rgba(255,255,255,0.5);
     transition: transform var(--transition-speed-fast), background-color var(--transition-speed-normal), box-shadow var(--transition-speed-normal);
 }
 .header .search-bar button:hover {
-    background-color: var(--hoover-btn);
-    color: #fff;
+    color: #ffff;
+    background-color: #7a13ae;
+    transform: translateY(-2px);
     box-shadow: 0 0 15px var(--hoover-btn), 0 0 8px #fff;
 }
 .header .search-bar button:active { transform: translateY(1px) scale(0.995); }
@@ -568,6 +568,19 @@ label:active {
     z-index: 1000;
     font-family: 'VT323', monospace;
 }
+
+.popup#fileInfo{
+    width: 500px;
+    box-shadow:
+            0 0 40px #fff84e,
+            5px 5px 0 rgba(255, 0, 0, 0.89), /* Artefact Décalé Magenta */
+            -5px -5px rgba(248, 255, 0, 0.76), /* Artefact Décalé Cyan */
+            inset 0 0 10px rgba(0, 0, 0, 0.8);
+
+}
+
+
+
 .popup.show { display: block; }
 .popup button { all: unset; cursor: inherit; }
 
@@ -575,7 +588,7 @@ label:active {
 /* --- Popup Header --- */
 .popup-header {
     /* Dégradé de plasma */
-    background: linear-gradient(90deg, #160025, #00334f);
+    background: linear-gradient(90deg, #00264e, #880791);
     color: var(--neon-glow);
     padding: var(--spacing-md) var(--spacing-lg);
     font-size: 1.8rem;
@@ -587,6 +600,8 @@ label:active {
     border-top-left-radius: var(--border-radius-lg);
     border-top-right-radius: var(--border-radius-lg);
 }
+
+
 .popup-header h2 {
     font-size: 1.8rem;
     margin: 0;
@@ -594,10 +609,11 @@ label:active {
     text-shadow: 0 0 3px #3f9fff, 0 0 8px #0080ff;
 }
 
+
 /* Bouton de Fermeture (X) */
 .popup-header .close-btn {
-    background-color: var(--main-color);
-    color: black;
+    background-color: rgba(39, 98, 202, 0.44);
+    color:black;
     border-radius: var(--border-radius-sm);
     padding: var(--spacing-sm) 10px;
     font-size: 1.2rem;
@@ -605,11 +621,16 @@ label:active {
     box-shadow: 0 6px 15px rgba(154,50,255,0.4);
     display: inline-block;
 }
+
+
 .popup-header .close-btn:hover {
-    background-color: var(--hoover-btn);
-    color: #fff;
+    background-color: rgba(90, 125, 193, 0.56);
+    color: #ffffff;
     transform: scale(1.05);
+    box-shadow: 0 0 15px var(--hoover-btn), 0 0 8px #fff;
 }
+
+
 
 
 /* --- Popup Content --- */
@@ -617,7 +638,7 @@ label:active {
     padding: 30px;
     color: #cfefff;
     /* Fond de contenu très sombre */
-    background-color: #02000b;
+    background-color: rgba(71, 25, 103, 0.18);
     min-height: 200px;
 }
 
@@ -632,6 +653,7 @@ label:active {
     letter-spacing: 1px;
     text-shadow: 0 0 4px rgba(63, 159, 255, 0.4);
 }
+
 
 /* Form Elements (Input/Select) */
 .popup-content label {
@@ -651,27 +673,26 @@ label:active {
     margin-bottom: var(--spacing-md);
     border-radius: var(--border-radius-sm);
     border: 1px solid rgba(154,50,255,0.7);
-    background-color: #150a25;
+    background-color: #150523;
     color: #e4feff;
     font-size: 1.1rem;
-    box-shadow: inset 0 0 10px rgba(0,213,255,0.15);
+    box-shadow: inset 0 0 10px rgba(120, 0, 255, 0.15);
     transition: all var(--transition-speed-normal);
     -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
 }
 .popup-content input[type="text"]:focus,
 .popup-content select:focus {
     outline: none;
-    border-color: var(--neon-accent);
-    box-shadow: 0 0 10px rgba(63, 159, 255, 0.7);
+    border-color: #be3dff;
+    box-shadow: 0 0 10px rgba(54, 112, 232, 0.7);
     background-color: #1c0e35;
 }
 
 /* Content Buttons */
 .popup-content button {
     display: inline-block;
-    background-color: var(--main-color);
+    background-color: #8f26a5;
     color: black;
     border-radius: var(--border-radius-sm);
     padding: 10px 18px;
@@ -682,7 +703,7 @@ label:active {
     box-shadow: 0 4px 12px rgba(154,50,255,0.3);
 }
 .popup-content button:hover {
-    background-color: var(--hoover-btn);
+    background-color: #7a13ae;
     color: #fff;
     transform: translateY(-2px);
 }
@@ -694,6 +715,28 @@ label:active {
     box-shadow: 0 4px 12px rgba(255,0,0,0.6);
 }
 .popup-content .DeleteAcct:hover {
-    background-color: #ff3333;
+    background-color: #9a0505;
     color: white;
+}
+
+#fileInfo .popup-content{
+    display: flex;
+    justify-content: center; /* centre horizontalement */
+    align-items: center;     /* centre verticalement */
+    height: 100%;
+}
+
+#fileInfo .popup-content table {
+    width: 100%;          /* occupe toute la largeur du conteneur */
+    table-layout: fixed;
+    border-collapse: collapse; /* supprime les doubles bordures et marges internes */
+    border-spacing: 0;    /* au cas où border-collapse n'est pas utilisé */
+}
+#fileInfo .popup-content table td,
+#fileInfo .popup-content table th {
+    padding: 5px 10px;
+    text-align: left;
+    word-break: break-word;
+    white-space: normal;
+    max-width: 200px;
 }

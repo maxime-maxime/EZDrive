@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (strpbrk($username, implode('', $invalidChars)) !== false) {
         echo"Ce nom d'utilisateur est problématique pour nous !";
+        $username = $_SESSION['user']['name'];
     }
-    else{
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT* FROM user WHERE name = :user");
         $stmt->execute([":user" => $username]);
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'name' => $username
             ]);
         }
-    }
+
     $_SESSION['user']['name'] = $username;
     echo"success";
 }
