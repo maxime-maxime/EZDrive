@@ -498,7 +498,6 @@ label:active {
     border-radius: var(--spacing-sm);
     padding: 5px 10px;
     font-size: 1rem;
-    cursor: pointer;
     transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
 }
 
