@@ -44,7 +44,7 @@
     margin: 0;
     padding: 0;
     font-family:Arial, sans-serif;
-    cursor: url('../ressources/pointinghand_eighty.cur'), auto;
+    cursor: url('../ressources/xxx/dicky_cursor.cur'), auto;
 }
 
 /* Fond global */
@@ -498,7 +498,6 @@ label:active {
     border-radius: var(--spacing-sm);
     padding: 5px 10px;
     font-size: 1rem;
-    cursor: pointer;
     transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
 }
 
@@ -610,7 +609,6 @@ label:active {
     font-size: 1rem;
     font-weight: bold;
     text-transform: uppercase;
-    cursor: pointer;
     transition: background-color var(--transition-speed-normal), transform var(--transition-speed-fast);
     /* Ombre subtile */
     box-shadow: 0 6px 16px rgba(255, 140, 0, 0.4);

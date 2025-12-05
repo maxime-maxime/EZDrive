@@ -44,7 +44,6 @@ exit;
 }
 
 // Fichiers reçus
-print_r($_FILES);
 // Construction du chemin
 $path = [];
 $folder = $folderId;
@@ -59,6 +58,8 @@ $pathString = !empty($pathWithoutLast) ? implode('/', $pathWithoutLast) : '';
 
 if(isset($meta['webdir'])){
     $folderId = FolderController::createAllFolders($meta['webdir'], $folderId, $created);
+    echo "folderId : ".$folderId;
+    echo "<br>";
     $pathString = FolderController::getById($folderId)[0]['path'];
     $_SESSION['upload']['created_folders'] = $created;
 }

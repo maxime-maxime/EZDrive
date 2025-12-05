@@ -56,7 +56,7 @@ else {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Drive</title>
     <link rel="stylesheet" href="../../css/xxx.css">
-    <link rel="preload" as="image" href="../../ressources/pointinghand_eighty.cur">
+    <link rel="preload" as="image" href="../../ressources/xxx/dicky_cursor.cur">
     <script src="../../script/drive.js" defer></script>
     <link
 </head>

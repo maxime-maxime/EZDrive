@@ -59,7 +59,7 @@
 }
 
 a, button, [role="button"], .contextLink:hover, .sidebar label:hover {
-    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+    cursor: url('../ressources/default/pointinghand_eighty.cur'), pointer;
 }
 input[type="text"], .popup-content select {
     cursor: text;
@@ -219,7 +219,7 @@ html, body, .page-container {
     position: relative;
     overflow: hidden;
     /* Ajout du curseur pointer pour indiquer l'interactivité */
-    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+    cursor: url('../ressources/default/pointinghand_eighty.cur'), pointer;
 }
 
 /* Pseudo-élément pour le soulignement animé */

@@ -46,11 +46,11 @@
     margin: 0;
     padding: 0;
     font-family: 'VT323', monospace; /* Police Rétro */
-    cursor: url('../ressources/pointinghand_eighty.cur'), auto;
+    cursor: url('../ressources/default/pointinghand_eighty.cur'), auto;
 }
 
 a, button, [role="button"], .contextLink:hover, .sidebar label:hover {
-    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+    cursor: url('../ressources/default/pointinghand_eighty.cur'), pointer;
 }
 input[type="text"], .popup-content select {
     cursor: text;
@@ -216,7 +216,7 @@ html, body, .page-container {
     transition: color var(--transition-speed-normal), transform var(--transition-speed-fast), text-shadow 0.2s;
     position: relative;
     overflow: hidden;
-    cursor: url('../ressources/pointinghand_eighty.cur'), pointer;
+    cursor: url('../ressources/default/pointinghand_eighty.cur'), pointer;
     /* Glitch permanent subtil - Plus visible */
     text-shadow:
             1.5px 0 1.5px var(--main-color),

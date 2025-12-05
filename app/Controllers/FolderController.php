@@ -73,6 +73,7 @@ class FolderController
     public static function getUniqueFolderName(string $name, int $parentId): string {
         $existingNames = array_column(FolderController::getFolderWithChildren($parentId)['children']['folders'], 'name');
         $newName = $name;
+        print_r($existingNames);
         $i = 1;
         while (in_array($newName, $existingNames)) {
             $newName = $name . ' (' . $i . ')';
@@ -81,45 +82,44 @@ class FolderController
         return $newName;
     }
 
-    public static function buildFolderPath(int $parentId, string $newName): string {
-        global $rootPath;
-
-        $path = [FolderController::getById($parentId)[0]['name']];
+    public static function buildFolderPath(int $parentId): string {
+        $path = [];
         $parentId = FolderController::getById($parentId)[0]['parent_id'];
-
-        while (end($path) !== 'root') {
+        while ($parentId !== null) {
             $folder = FolderController::getById($parentId)[0];
+            $path[] = $parentId;
             $parentId = $folder['parent_id'];
-            $path[] = $folder['name'];
         }
-
-        $pathWithoutLast = array_reverse(array_slice($path, 0, -1));
-        $pathString = implode('\\', $pathWithoutLast) . '\\' . $newName;
-        return str_replace(["\\", "//"], ["/", "/"], $rootPath . '\\' . $pathString);
+        return implode('\\',  array_reverse($path));
     }
 
     public static function createFolder(int $parentId, string $name, bool $verify = true ): array {
         global $rootPath;
         $sanitizedName = self::sanitizeFolderName($name);
         $uniqueName = $verify ? self::getUniqueFolderName($sanitizedName, $parentId) : $sanitizedName;
-        $dir = self::buildFolderPath($parentId, $uniqueName);
+        $relative = self::buildFolderPath($parentId);
+        $dir = $rootPath . '\\' . $relative . $uniqueName;
+        $dir = str_replace(["/", "\\\\"], "\\", $dir);
+
 
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
-
-            $dirNormalized = str_replace("/", "\\", $dir);
-            $rootNormalized = str_replace("/", "\\", $rootPath);
-
-            $relative = str_replace($rootNormalized, '', $dirNormalized);
+            echo "folder created at : ".$dir;
+            echo "<br>";
+            $path = $relative.'\\'.$uniqueName;
+            if (isset($path[0]) && $path[0] === '\\') {
+                $path = substr($path, 1);
+            }
+            echo $path;
             $data = [
                 'name' => $uniqueName,
                 'parent_id' => $parentId,
-                'path' => $relative
+                'path' => $path
             ];
             FolderController::create($data);
         }
         else $data=[];
-        return Folder::getByPath($data['path']?? null);
+        return Folder::getByPath($data['path']?? '');
     }
 
     public static function getFoldersToDel(array $folderIds, array $files = [], array $folders = []): array {
