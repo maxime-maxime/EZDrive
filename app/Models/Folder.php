@@ -153,7 +153,7 @@ class Folder
     }
     public static function rename(int $id, string $newName ):void{
         $path = Folder::getById($id)[0]['path'];
-        $path = dirname($path).'\\'.$newName;
+        $path = dirname($path) != '.' ? dirname($path).'\\'.$newName : $newName;
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("UPDATE folder SET name = :newname, path = :path WHERE id = :id");
         $stmt->execute([

@@ -45,15 +45,17 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
 
             if ($folder_id > 0 && !empty($newName)) {
                 $folder = FolderController::rename($folder_id, $newName, $parentId);
-                $folderPath = $folder['path'];
-                $name = $folder['previousName'];
+
+
+                $previousName = $folder['previousName'];
                 $newName = $folder['name'];
-                $oldpath =$rootPath  . dirname($folderPath).'\\'.$name;
-                $oldpath =  str_replace("/", "\\", $oldpath);
-                $newpath = $rootPath .$folderPath;
-                $newpath =  str_replace("/", "\\", $newpath);
+                $path = $folder['path'];
+                $oldpath =$rootPath ."\\" . $path.$previousName;
+                $newpath = $rootPath ."\\". $path.$newName;
+                echo 'old path : '.$oldpath;
+                echo 'new path : '.$newpath;
+                echo 'previous name : '.$previousName;
                 echo '  new name : '.$newName;
-                echo 'previous name : '.$name;
                 rename( $oldpath,  $newpath);
             }
         }

@@ -72,8 +72,7 @@ class FolderController
 
     public static function getUniqueFolderName(string $name, int $parentId): string {
         $existingNames = array_column(FolderController::getFolderWithChildren($parentId)['children']['folders'], 'name');
-        $newName = $name;
-        print_r($existingNames);
+        $newName = self::sanitizeFolderName($name);
         $i = 1;
         while (in_array($newName, $existingNames)) {
             $newName = $name . ' (' . $i . ')';
@@ -83,13 +82,14 @@ class FolderController
     }
 
     public static function buildFolderPath(int $parentId): string {
-        $path = [];
+        $path = [$parentId];
         $parentId = FolderController::getById($parentId)[0]['parent_id'];
         while ($parentId !== null) {
             $folder = FolderController::getById($parentId)[0];
             $path[] = $parentId;
             $parentId = $folder['parent_id'];
         }
+        array_pop($path);
         return implode('\\',  array_reverse($path));
     }
 
@@ -97,20 +97,17 @@ class FolderController
         global $rootPath;
         $sanitizedName = self::sanitizeFolderName($name);
         $uniqueName = $verify ? self::getUniqueFolderName($sanitizedName, $parentId) : $sanitizedName;
-        $relative = self::buildFolderPath($parentId);
-        $dir = $rootPath . '\\' . $relative . $uniqueName;
+        $relative =str_replace("\\\\","\\", self::buildFolderPath($parentId).'\\'.$uniqueName);
+        $dir = $rootPath . '\\' . self::pathToDir($relative) . $uniqueName;
         $dir = str_replace(["/", "\\\\"], "\\", $dir);
-
 
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
-            echo "folder created at : ".$dir;
-            echo "<br>";
-            $path = $relative.'\\'.$uniqueName;
+            echo "folder created at : " . $dir;
+            $path = $relative;
             if (isset($path[0]) && $path[0] === '\\') {
                 $path = substr($path, 1);
             }
-            echo $path;
             $data = [
                 'name' => $uniqueName,
                 'parent_id' => $parentId,
@@ -182,16 +179,24 @@ class FolderController
         $previousName = Folder::getById($id)[0]['name'];
         $newName = self::getUniqueFolderName($name, $parentId);
         Folder::rename($id, $newName);
-
+        $path = self::pathToDir(Folder::getById($id)[0]['path']);
 
         return [
-            'path' => Folder::getById($id)[0]['path'],
+            'path' => $path,
             'name' => $newName,
             'previousName' =>$previousName
         ];
     }
 
 
+        public static function pathToDir($p) :string{
+            $path="";
+            $oldPath = explode('\\',dirname( $p));
+            foreach ($oldPath as $cPath) {
+                $path .= FolderController::getById((int)$cPath)[0]["name"] . "\\";
+            }
+            return $path;
+        }
 }
 
 
