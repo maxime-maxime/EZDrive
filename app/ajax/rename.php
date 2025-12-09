@@ -20,15 +20,15 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
             $file_id = (int)$id;
             if ($file_id > 0 && !empty($name)) {
                 $file = DocumentController::rename($file_id, $name);
-                $filePath = $file['path'];
+                $filePath = DocumentController::pathToDir($file['path']);
                 $previousName = $file['previousName'];
                 $newName = $file['name'];
                 echo '  new name : '.$newName;
                 echo 'previous name : '.$previousName;
 
-                $oldpath = $rootPath . dirname($filePath)."\\".$previousName;
+                $oldpath = $rootPath .'\\'. $filePath.$previousName;
                 $oldpath =  str_replace("/", "\\", $oldpath);
-                $newpath = $rootPath .'/'. dirname($filePath).'\\'. $newName;
+                $newpath = $rootPath .'\\'. $filePath. $newName;
                 $newpath =  str_replace("/", "\\", $newpath);
                 echo 'old path : '.$oldpath;
                 echo 'new path : '.$newpath;
