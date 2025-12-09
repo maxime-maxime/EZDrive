@@ -16,6 +16,20 @@ $files = [];
 $folders = [];
 if(!empty($del['folders'])) {
     $folders = array_column(FolderController::getById($del['folders']), "path");
+    foreach($folders as $path){
+        echo 'paaaath : "'.$path.'"';
+        $name = FolderController::getByPath($path)['name'];
+        $path = FolderController::pathToDir($path);
+        $delpath = $rootPath .'/'. $path.'/'.$name;
+        $delpath = str_replace(["\\", "//"], ["/", "/"], $delpath);
+        echo $delpath;
+        if(is_file($delpath)){
+            unlink($delpath);
+        }
+        if(is_dir($delpath)){
+            deleteDir($delpath);
+        }
+    }
     FolderController::deleteRows($del['folders']);
 }
 if(!empty($del['files'])) {
@@ -25,16 +39,8 @@ if(!empty($del['files'])) {
 
 $folders = array_merge($folders, $files);
 
-foreach($folders as $path){
-    $delpath = $rootPath .'/'. $path;
-    $delpath = str_replace(["\\", "//"], ["/", "/"], $delpath);
-    if(is_file($delpath)){
-        unlink($delpath);
-    }
-    if(is_dir($delpath)){
-        deleteDir($delpath);
-    }
-}
+
+
 function deleteDir($dir):void {
     if (!is_dir($dir)) return;
 

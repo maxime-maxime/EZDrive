@@ -9,14 +9,17 @@ $foldersArray = $folders ? explode(',', $folders) : [];
 $filesArray = $files ? array_map('intval', explode(',', $files)) : [];
 $filesArray = getFolders($foldersArray, $filesArray);
 
-
-$file = array_column(DocumentController::listTuplesToPrint(['id'=>$filesArray]), 'path');
-echo json_encode($file);
+$rows = DocumentController::listTuplesToPrint(['id' => $filesArray]);
+$files = array_map(
+    fn($r) => DocumentController::pathToDir($r['path']) . $r['name'],
+    $rows
+);
+echo json_encode($files);
 
 
 function getFolders($folderId, $filesArray):array{
     foreach($folderId as $folder){
-    $children = FolderController::getFolderWithChildren($folder, getFiles: true)['children'];
+        $children = FolderController::getFolderWithChildren($folder, getFiles: true)['children'];
         $childFolders = array_column($children['folders'], 'id');
         $childFiles = array_column($children['files'], 'id');
         $filesArray = array_merge($filesArray, $childFiles);

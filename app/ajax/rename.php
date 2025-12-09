@@ -45,8 +45,6 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
 
             if ($folder_id > 0 && !empty($newName)) {
                 $folder = FolderController::rename($folder_id, $newName, $parentId);
-
-
                 $previousName = $folder['previousName'];
                 $newName = $folder['name'];
                 $path = $folder['path'];

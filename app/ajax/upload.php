@@ -43,24 +43,23 @@ echo'absent token';
 exit;
 }
 
-// Fichiers reçus
-// Construction du chemin
 $path = [];
 $folder = $folderId;
 do {
-    $currentFolder = FolderController::getById($folder)[0];
-    $path[] = $currentFolder['name'];
-    $folder = $currentFolder['parent_id'];
-} while ($folder !== null);
+    $currentFolder = FolderController::getById($folder)[0]['parent_id'];
+    $path[] = $currentFolder;
+} while ($currentFolder !== null);
 
 $pathWithoutLast = array_reverse(array_slice($path, 0, -1));
 $pathString = !empty($pathWithoutLast) ? implode('/', $pathWithoutLast) : '';
 
+
 if(isset($meta['webdir'])){
     $folderId = FolderController::createAllFolders($meta['webdir'], $folderId, $created);
-    echo "folderId : ".$folderId;
-    echo "<br>";
-    $pathString = FolderController::getById($folderId)[0]['path'];
+    $pathString = dirname(FolderController::getById($folderId)[0]['path']).'\\'.$folderId;
+    if($pathString[0]=="."){
+        $pathString = substr($pathString, 2);
+    }
     $_SESSION['upload']['created_folders'] = $created;
 }
 
@@ -89,24 +88,22 @@ if(isset($meta['webdir'])){
         'owner' => $_SESSION['user']['user_id']
     ];
 
-        $basePath = $rootPath;
 
-            $path = $basePath . '/' . $rpath;
-            $path = str_replace(["\\", "//"], ["/", "/"], $path);
-
-        DocumentController::insert($document);
-
-        if (!file_exists($path)) {
-            if(move_uploaded_file($_FILES['file']['tmp_name'], $path)){
-                echo 'file created at ' . $path;
+        $dirPath = DocumentController::pathToDir($rpath);
+        $dirPath = $rootPath . '/' . $dirPath;
+        $dirPath = str_replace(["\\", "//"], ["/", "/"], $dirPath).$document['name'];
+        if (!file_exists($dirPath)) {
+            if(move_uploaded_file($_FILES['file']['tmp_name'], $dirPath)){
+                DocumentController::insert($document);
+                echo 'file created at ' . $dirPath;
             }
             else{
                 $error = error_get_last();
-                error_log('Échec move_uploaded_file vers ' . $path . '. Erreur : ' . print_r($error, true));
+                error_log('Échec move_uploaded_file vers ' . $dirPath . '. Erreur : ' . print_r($error, true));
             }
         }
         else{
-            error_log('Fichier existant : ' . $path);
+            error_log('Fichier existant : ' . $dirPath);
         }
 
 

@@ -18,13 +18,9 @@ class FolderController
     // Récupérer un dossier et ses enfants
     public static function getFolderWithChildren(int $id, bool $getFiles = false): array
     {
-        $folder = $id;
-        if (!$folder) {
-            throw new Exception("Dossier introuvable.");
-        }
         $children = Folder::getChildren($id, $getFiles);
         return [
-            'folder' => $folder,
+            'folder' => $id,
             'children' => $children
         ];
     }
@@ -114,6 +110,7 @@ class FolderController
                 'path' => $path
             ];
             FolderController::create($data);
+
         }
         else $data=[];
         return Folder::getByPath($data['path']?? '');
@@ -190,9 +187,10 @@ class FolderController
 
 
         public static function pathToDir($p) :string{
-            $path="";
             $oldPath = explode('\\',dirname( $p));
+            $path='';
             foreach ($oldPath as $cPath) {
+                if($cPath === '' || $cPath === null || $cPath === '.') continue;
                 $path .= FolderController::getById((int)$cPath)[0]["name"] . "\\";
             }
             return $path;

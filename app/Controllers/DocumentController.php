@@ -46,8 +46,8 @@ class DocumentController
         return $documents;
     }
 
-    public static function getById(int $userId): array{
-        return Document::getById($userId);
+    public static function getById(int $id): array{
+        return Document::getById($id);
     }
 
     public static function getUniqueName(string $name, int $folderId): array {
@@ -86,5 +86,15 @@ class DocumentController
             "name" => $newName,
             "previousName" => $fileInfo['name']
         ];
+    }
+
+    public static function pathToDir($p) :string{
+        $oldPath = explode('\\',dirname( $p));
+        $path='';
+        foreach ($oldPath as $cPath) {
+            if($cPath === '' || $cPath === null || $cPath === '.') continue;
+            $path .= FolderController::getById((int)$cPath)[0]["name"] . "\\";
+        }
+        return $path;
     }
 }

@@ -85,11 +85,13 @@ class Document
     public static function getById(int $id): ?array {
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM document WHERE id = :id AND owner = :owner");
+        echo $id;
         $stmt->execute([
             ":id" => $id,
             ":owner" => $_SESSION['user']['user_id']
         ]);
         $doc = $stmt->fetch(PDO::FETCH_ASSOC);
+        print_r($doc);
         return $doc ?: [];
     }
 
