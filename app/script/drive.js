@@ -102,11 +102,35 @@ function loadFiles() {
 
 // --- UPLOAD ---
 
-fileInput.addEventListener('change', async () => {
+fileInput.addEventListener('change', async() => {
+
+    const files = Array.from(fileInput.files);
+    await uploadFiles(files);
+});
+
+
+const dropzone = document.querySelector('.page-container');
+dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+});
+
+dropzone.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+});
+
+dropzone.addEventListener('drop', async(e) => {
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files);
+    await uploadFiles(files);
+
+});
+
+async function uploadFiles(files,){
     const token = Math.random().toString(36).slice(2, 10);
     const folderId = new URLSearchParams(window.location.search).get("folderId");
-    const files = Array.from(fileInput.files);
-
     for (const file of files) {
         const form = new FormData();
         form.append("file", file);
@@ -129,7 +153,7 @@ fileInput.addEventListener('change', async () => {
             console.error(`Erreur pour ${file.name} :`, err);
         }
     }
-});
+}
 
 
 // --- INPUT LISTENERS (KEYBOARD & MOUSE) ---
@@ -434,6 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         window.location.reload();
     });
+
 
     // Logique thèmes (était déjà dans un DOMContentLoaded)
     const themesSelect = document.getElementById('themes-select');

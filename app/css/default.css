@@ -69,6 +69,10 @@ html, body, .page-container {
     height: calc(100vh - var(--header-height));
 }
 
+.page-container.dragover {
+    background-color: rgba(71, 22, 120, 0.73);
+}
+
 
 /**
  * ====================================================================

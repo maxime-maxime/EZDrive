@@ -10,7 +10,7 @@ $filesArray = $files ? array_map('intval', explode(',', $files)) : [];
 $filesArray = getFolders($foldersArray, $filesArray);
 $rows = DocumentController::listTuplesToPrint(['id' => $filesArray]);
 $files = array_map(
-    fn($r) => DocumentController::pathToDir($r['path']) . $r['name'],
+    fn($r) => DocumentController::pathToDir($r['path']),
     $rows
 );
 echo json_encode($files);

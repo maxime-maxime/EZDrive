@@ -7,6 +7,8 @@ global $rootPath, $invalidChars, $extToType, $typeToPreview;
 
 $meta = json_decode($_POST['meta'] ?? '{}', true);
 $file = $_FILES['file'] ?? null;
+print_r($meta);
+print_r($file);
 
 
 
@@ -58,7 +60,7 @@ $pathWithoutLast = array_reverse(array_slice($path, 0, -1));
 $pathString = !empty($pathWithoutLast) ? implode('/', $pathWithoutLast) : '';
 
 
-if(isset($meta['webdir'])){
+if(isset($meta['webdir']) && $meta['webdir'] !== ''){
     $folderInf = FolderController::createAllFolders($meta['webdir'], $folderId, $created);
     $_SESSION['upload']['created_folders'] = $created;
     $folderId = $folderInf['id'];
@@ -67,6 +69,9 @@ if(isset($meta['webdir'])){
         $pathString = dirname($folderInf['path']).'\\'.$pathString;
     }
 
+}
+else{
+    $folderInf = FolderController::getById($folderId)[0];
 }
 
 
@@ -80,8 +85,14 @@ if(isset($meta['webdir'])){
     $newName = $new['name'] ?? [];
     $ext = $new['ext'] ?? [];
 
-    $rpath = (dirname($folderInf['path']) !== '.' ? dirname($folderInf['path']).'\\' : '') .$folderInf["id"] .'\\'.$newName . '.' . $ext;
-    $rdir = (dirname($folderInf['path']) !== '.' ? DocumentController::pathToDir($folderInf['path']) : $folderInf["name"]) .'\\'.$newName . '.' . $ext;
+    if($folderInf["name"]==="root"){
+        $rpath = $newName . '.' . $ext;
+        $rdir = $rpath;
+    }
+    else {
+        $rpath = (dirname($folderInf['path']) !== '.' || '' ? dirname($folderInf['path']) . '\\' : '') . $folderInf["id"] . '\\' . $newName . '.' . $ext;
+        $rdir = (dirname($folderInf['path']) !== '.' || '' ? DocumentController::pathToDir($folderInf['path']) : $folderInf["name"]) . '\\' . $newName . '.' . $ext;
+    }
 
     $document = [
         'name' => $newName.'.'.$ext,
@@ -96,10 +107,12 @@ if(isset($meta['webdir'])){
 
         $dirPath = $rootPath . '/' . $rdir;
         $dirPath = str_replace(["\\", "//"], ["/", "/"], $dirPath);
+        echo $dirPath;
         if (!file_exists($dirPath)) {
             if(move_uploaded_file($_FILES['file']['tmp_name'], $dirPath)){
                 DocumentController::insert($document);
-                echo 'file created at root/ ' . $rdir;
+                echo 'file created at root
+                ' . $rdir;
             }
             else{
                 $error = error_get_last();
