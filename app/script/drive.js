@@ -394,6 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(url)
             .then(res => res.json())
             .then(data => {
+                console.log(data);
                 const container = document.querySelector('#fileInfo .popup-content table');
                 container.innerHTML = '';
                 Object.entries(data).forEach(([key, value]) => {

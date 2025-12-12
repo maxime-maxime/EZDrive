@@ -89,12 +89,13 @@ class DocumentController
     }
 
     public static function pathToDir($p) :string{
-        $oldPath = explode('\\',dirname( $p));
+        $name = basename($p);
+        $oldPath = explode('\\',dirname($p));
         $path='';
         foreach ($oldPath as $cPath) {
             if($cPath === '' || $cPath === null || $cPath === '.') continue;
             $path .= FolderController::getById((int)$cPath)[0]["name"] . "\\";
         }
-        return $path;
+        return $path.$name;
     }
 }

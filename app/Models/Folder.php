@@ -100,9 +100,6 @@ class Folder
         $in = implode(',', array_fill(0, count($ids), '?'));
         $stmt = $pdo->prepare("SELECT id FROM folder WHERE id IN ($in) AND owner = ?");
         $stmt->execute([...$ids, $_SESSION['user']['user_id']]);
-        $owned = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-        if (count($owned) !== count($ids)) throw new Exception("Accès refusé ou dossier introuvable.");
 
         // Suppression
         $stmt = $pdo->prepare("DELETE FROM folder WHERE id IN ($in)");
@@ -141,8 +138,9 @@ class Folder
     public static function togleFavorite(int $id): void
     {
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("SELECT favorite FROM folder WHERE id = :id");
-        $stmt->execute([":id" => $id]);
+        $stmt = $pdo->prepare("SELECT favorite FROM folder WHERE id = :id AND owner = :owner");
+        $stmt->execute([":id" => $id,
+            ":owner" => $_SESSION['user']['user_id']]);
         $favorite = $stmt->fetchColumn();
         $favorite = ($favorite==1) ? 0 : 1;
         $stmt = $pdo->prepare("UPDATE folder SET favorite = :favorite WHERE id = :id");
@@ -155,11 +153,24 @@ class Folder
         $path = Folder::getById($id)[0]['path'];
         $path = dirname($path) != '.' ? dirname($path).'\\'.$newName : $newName;
         $pdo = Database::getConnection();
-        $stmt = $pdo->prepare("UPDATE folder SET name = :newname, path = :path WHERE id = :id");
+        $stmt = $pdo->prepare("UPDATE folder SET name = :newname, path = :path WHERE id = :id AND owner = :owner");
         $stmt->execute([
             ":newname" => $newName,
             ":id" => $id,
-            ":path" => $path
+            ":path" => $path,
+            ":owner" => $_SESSION['user']['user_id']
         ]);
+    }
+
+    public static function getByKey(int $parentId, string $name): array|false
+    {   $pdo = Database::getConnection();
+
+        $stmt = $pdo->prepare("SELECT * FROM folder WHERE parent_id = :parentId AND name = :name AND owner = :owner");
+        $stmt->execute([":owner" => $_SESSION['user']['user_id'],
+            ":parentId" => $parentId,
+            ":name" => $name]);
+        $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $folders ?: [];
     }
 }

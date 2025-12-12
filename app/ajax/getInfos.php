@@ -13,7 +13,7 @@ if(isset($_GET['folderId']) && $_GET['folderId'] != 'null'){
         'Modifié le' => $folder['updated_at'],
         'Créé le' => $folder['created_at'],
         'Propriétaire' => $owner["name"],
-        'Chemin' => $owner["name"] . str_replace("\\","/",$folder["path"])
+        'Chemin' =>'Home-'. $owner["name"] .'/'. str_replace("\\","/",FolderController::pathToDir($folder["path"]))
         ];
     echo json_encode($folderInfos);
     exit;
@@ -27,7 +27,7 @@ if(isset($_GET['fileId']) && $_GET['fileId'] != 'null'){
         'Modifié le' => $file['updated_at'],
         'Créé le' => $file['created_at'],
         'Propriétaire' => $owner["name"],
-        'Chemin' => $owner["name"] . str_replace("\\","/",$file["path"])
+        'Chemin' =>'Home-'. $owner["name"] . "/".str_replace("\\","/",DocumentController::pathToDir($file["path"]))
     ];
     echo json_encode($folderInfos);
 }

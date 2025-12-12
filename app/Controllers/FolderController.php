@@ -94,12 +94,11 @@ class FolderController
         $sanitizedName = self::sanitizeFolderName($name);
         $uniqueName = $verify ? self::getUniqueFolderName($sanitizedName, $parentId) : $sanitizedName;
         $relative =str_replace("\\\\","\\", self::buildFolderPath($parentId).'\\'.$uniqueName);
-        $dir = $rootPath . '\\' . self::pathToDir($relative) . $uniqueName;
+        $dir = $rootPath . '\\' . self::pathToDir($relative);
         $dir = str_replace(["/", "\\\\"], "\\", $dir);
 
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
-            echo "folder created at : " . $dir;
             $path = $relative;
             if (isset($path[0]) && $path[0] === '\\') {
                 $path = substr($path, 1);
@@ -150,20 +149,19 @@ class FolderController
         if (empty($parts)) {
             return $parentId;
         }
-
         foreach ($parts as $name) {
-
             $key = $parentId . '|' . $name;
             if (!isset($created[$key])) {
-                $folderId = self::createFolder($parentId, $name)['id'];
+                $folderInf = self::createFolder($parentId, $name);
+                $folderId = $folderInf['id'];
                 $created[$key] = $folderId;
             } else {
                 $folderId = $created[$key];
+                $folderInf = Folder::getByKey($parentId, $name)[0];
             }
             $parentId = $folderId;
         }
-
-        return $parentId;
+        return $folderInf;
     }
 
     public static function togleFavorite(int $id): void
@@ -187,13 +185,14 @@ class FolderController
 
 
         public static function pathToDir($p) :string{
-            $oldPath = explode('\\',dirname( $p));
+            $name = basename($p);
+            $oldPath = explode('\\',dirname($p));
             $path='';
             foreach ($oldPath as $cPath) {
                 if($cPath === '' || $cPath === null || $cPath === '.') continue;
                 $path .= FolderController::getById((int)$cPath)[0]["name"] . "\\";
             }
-            return $path;
+            return $path.$name;
         }
 }
 

@@ -26,13 +26,13 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 echo '  new name : '.$newName;
                 echo 'previous name : '.$previousName;
 
-                $oldpath = $rootPath .'\\'. $filePath.$previousName;
+                $oldpath = $rootPath .'\\'. dirname($filePath).$previousName;
                 $oldpath =  str_replace("/", "\\", $oldpath);
-                $newpath = $rootPath .'\\'. $filePath. $newName;
+                $newpath = $rootPath .'\\'. $filePath;
                 $newpath =  str_replace("/", "\\", $newpath);
                 echo 'old path : '.$oldpath;
                 echo 'new path : '.$newpath;
-                rename( $oldpath,  $newpath);            }
+                rename( $oldpath,  $newpath);}
         }
     }
 
@@ -48,8 +48,8 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 $previousName = $folder['previousName'];
                 $newName = $folder['name'];
                 $path = $folder['path'];
-                $oldpath =$rootPath ."\\" . $path.$previousName;
-                $newpath = $rootPath ."\\". $path.$newName;
+                $oldpath =$rootPath ."\\" . dirname($path).$previousName;
+                $newpath = $rootPath ."\\". $path;
                 echo 'old path : '.$oldpath;
                 echo 'new path : '.$newpath;
                 echo 'previous name : '.$previousName;

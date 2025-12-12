@@ -14,15 +14,35 @@ $del = FolderController::getFoldersToDel($foldersArray, $filesArray,$foldersArra
 
 $files = [];
 $folders = [];
+
+$file=[];
+if(!empty($del['files'])) {
+    $files = DocumentController::listTuplesToPrint(['id'=>$del['files']]);
+    foreach($files as $tmp){
+        $file []= DocumentController::pathToDir($tmp['path']);
+    }
+    DocumentController::deleteRows($del['files']);
+}
+
+$folder=[];
 if(!empty($del['folders'])) {
-    $folders = array_column(FolderController::getById($del['folders']), "path");
+    print_r($del['folders']);
+    $folders = FolderController::getById($del['folders']);
+    print_r($folders);
+    foreach($folders as $tmp){
+        echo FolderController::pathToDir($tmp['path']);
+        $folder []= FolderController::pathToDir($tmp['path']);
+        FolderController::deleteRows($del['folders']);
+    }}
+    print_r($folder);
+    print_r($file);
+    $folders = array_merge($folder, $file);
+    $folders = array_unique($folders);
+
     foreach($folders as $path){
-        echo 'paaaath : "'.$path.'"';
-        $name = FolderController::getByPath($path)['name'];
-        $path = FolderController::pathToDir($path);
-        $delpath = $rootPath .'/'. $path.'/'.$name;
+        $delpath = $rootPath .'/'. $path;
+        echo 'delpath : '. $delpath;
         $delpath = str_replace(["\\", "//"], ["/", "/"], $delpath);
-        echo $delpath;
         if(is_file($delpath)){
             unlink($delpath);
         }
@@ -30,14 +50,9 @@ if(!empty($del['folders'])) {
             deleteDir($delpath);
         }
     }
-    FolderController::deleteRows($del['folders']);
-}
-if(!empty($del['files'])) {
-    $files = array_column(DocumentController::listTuplesToPrint(['id'=>$del['files']]), 'path');
-    DocumentController::deleteRows($del['files']);
-}
 
-$folders = array_merge($folders, $files);
+
+
 
 
 
