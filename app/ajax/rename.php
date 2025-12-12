@@ -23,12 +23,10 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 $filePath = DocumentController::pathToDir($file['path']);
                 $previousName = $file['previousName'];
                 $newName = $file['name'];
-                echo '  new name : '.$newName;
-                echo 'previous name : '.$previousName;
-
-                $oldpath = $rootPath .'\\'. dirname($filePath).$previousName;
+                $path = dirname($filePath) != '.' ? dirname($filePath) : '';
+                $oldpath = $rootPath .'\\'. $path.'\\'.$previousName;
                 $oldpath =  str_replace("/", "\\", $oldpath);
-                $newpath = $rootPath .'\\'. $filePath;
+                $newpath = $rootPath .'\\'. $path.'\\'.$newName;
                 $newpath =  str_replace("/", "\\", $newpath);
                 echo 'old path : '.$oldpath;
                 echo 'new path : '.$newpath;
@@ -47,9 +45,11 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 $folder = FolderController::rename($folder_id, $newName, $parentId);
                 $previousName = $folder['previousName'];
                 $newName = $folder['name'];
-                $path = $folder['path'];
-                $oldpath =$rootPath ."\\" . dirname($path).$previousName;
-                $newpath = $rootPath ."\\". $path;
+                $path = dirname($folder['path']) != '.' ? dirname($folder['path']):'';
+                $oldpath =$rootPath ."\\" . $path.'\\'.$previousName;
+                $newpath = $rootPath ."\\". $path.'\\'.$newName;
+                $oldpath =  str_replace(["/",'\\\\'], "\\", $oldpath);
+                $newpath =  str_replace(["/",'\\\\'], "\\", $newpath);
                 echo 'old path : '.$oldpath;
                 echo 'new path : '.$newpath;
                 echo 'previous name : '.$previousName;
