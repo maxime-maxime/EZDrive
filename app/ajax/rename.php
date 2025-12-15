@@ -13,6 +13,7 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
 
 
     $files = json_decode($_GET['files'], true);
+    echo('files : ');
     print_r($files);
 
     if (is_array($files)) {

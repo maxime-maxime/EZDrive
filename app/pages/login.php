@@ -1,29 +1,36 @@
 <?php
 session_start();
 require_once '../Database.php';
+require_once '../Controllers/SecurityController.php';
 $logout=false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $pdo = Database::getConnection();
-    $stmt = $pdo->prepare("SELECT psw, user_id, last_theme FROM user WHERE name = :user");
-    $stmt->execute([":user" => $username]);
-    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-    $lastTheme = $userData['last_theme']??'default';
+    $waitingTime = SecurityController::isIpAllowed($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0', $username);
+    if($waitingTime){
+        $error = 'Votre accès à ce compte est temporairement bloqué...';
+    }
+    else{
+        $pdo = Database::getConnection();
+        $stmt = $pdo->prepare("SELECT psw, user_id, last_theme FROM user WHERE name = :user");
+        $stmt->execute([":user" => $username]);
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $lastTheme = $userData['last_theme']??'default';
     if ($userData && password_verify($password, $userData['psw'])) {
         $_SESSION['user'] = [
             'user_id' => $userData['user_id'],
             'name' => $username,
         ];
-        echo $lastTheme;
-        header('Location: '.$lastTheme.'/index.php?folderId=root');
+        SecurityController::remove($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0', $username);
+        header('Location: '.$lastTheme.'/index.php?folderId=root&sort=name&orderType=asc&order=name');
         exit;
     } else {
-        $error = 'Nom d\'utilisateur ou mot de passe incorrect.';
+        $error = 'Informations incorrectes.';
+        SecurityController::lockIp($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0', $username);
     }
-} else {
+}} else {
     $message = 'Veuillez vous connecter.';
 }
 ?>
@@ -66,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         <div class="message">
         <?php if (isset($error)) echo "<p style='color: red;'>$error</p>"; ?>
-        <?php if (isset($message)) echo "<p>$message</p>"; ?>
+        <?php if (isset($message)) echo "<p style='color: green;'>$message</p>"; ?>
         </div>
         <div id="notification">
         Vous avez été déconnecté

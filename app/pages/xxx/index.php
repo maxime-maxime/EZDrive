@@ -40,7 +40,7 @@ if(isset($_SESSION['user']['user_id'])) {
     $directory_path = dirname($full_path);
     $dynamic_segment = basename($directory_path);
     if(!in_array($dynamic_segment, $userThemes)){
-        header("Location: index.php?folderId=root");
+        header("Location: ../index.php");
     }
 }
 else {
@@ -61,7 +61,7 @@ else {
     <link
 </head>
 <body>
-<!-- Header -->
+
 <header class="header">
     <div class="left">
         <div class="logo">PornDrive</div>
@@ -75,7 +75,7 @@ else {
     </div>
 
     <div class="right user-actions">
-        <button class="selectAll"><img src="../../ressources/default/selectAll.png" alt="Tout Sélectionner" /></button>
+        <button class="selectAll"><img src="../../ressources/xxx/select_all.png" alt="Tout Sélectionner" /></button>
         <button class="create_folder"><img src="../../ressources/xxx/create_folder.png" alt="Créer" /></button>
         <button class="upload"><img src="../../ressources/xxx/upload.png" alt="Importer" /></button>
         <button class="download"><img src="../../ressources/xxx/download.png" alt="Exporter" /></button>
@@ -87,55 +87,53 @@ else {
 
 
 
-<!-- Conteneur principal -->
 <div class="page-container">
-    <!-- Sidebar fixe à gauche -->
     <aside class="sidebar">
         <h3>Types de fichiers</h3>
+
         <ul>
             <li>
-                <input type="checkbox" id="filter-images" class="filter">
-                <label for="filter-images">Images</label>
+                <input type="checkbox" id="image" class="filter">
+                <label for="image">Images</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-videos" class="filter">
-                <label for="filter-videos">Vidéos</label>
+                <input type="checkbox" id="video" class="filter">
+                <label for="video">Vidéos</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-documents" class="filter">
-                <label for="filter-documents">Documents</label>
+                <input type="checkbox" id="document" class="filter">
+                <label for="document">Documents</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-audio" class="filter">
-                <label for="filter-audio">Audio</label>
+                <input type="checkbox" id="audio" class="filter">
+                <label for="audio">Audio</label>
             </li>
         </ul>
 
         <h3>Personnalisé</h3>
         <ul>
             <li>
-                <input type="checkbox" id="filter-favorites" class="filter">
-                <label for="filter-favorites">Favoris</label>
+                <input type="checkbox" id="favorite" class="filter">
+                <label for="favorite">Favoris</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-shared" class="filter">
-                <label for="filter-shared">Partagés avec moi</label>
+                <input type="checkbox" id="shared" class="filter">
+                <label for="shared">Partagés</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-recent" class="filter">
-                <label for="filter-recent">Récents</label>
+                <input type="checkbox" id="recent" class="filter">
+                <label for="recent">Récents</label>
             </li>
         </ul>
 
     </aside>
 
-    <!-- Contenu principal -->
     <main class="main-content">
     </main>
 
 </div><div class="popup" id="profilInfo" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
     <div class="popup-header">
-        <h2 id="popupTitle">Mon Profil</h2> <button class="close-btn" aria-label="Fermer la fenêtre">X</button>
+        <h2 id="popupTitle">Mon Profil</h2> <button class="close-btn" aria-label="Fermer">X</button>
     </div>
 
     <div class="popup-content">
@@ -176,6 +174,13 @@ else {
         <li class="contextLink" id="delete"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel">supprimer</span></li>
         <li class="contextLink" id="rename"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel">renommer</span></li>
         <li class="contextLink" id="setFavorite"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel">favori</span></li>
+    </ul>
+</div>
+
+<div class="context-menu-bis">
+    <ul class="context">
+        <li class="contextLink" id="sort_name" ><img src="../../ressources/default/sort_alphabet.png" alt="asc" /><span class="contextLabel">trier par nom</span></li>
+        <li class="contextLink" id="sort_date"><img src="../../ressources/default/calendar.png" alt="date" /><span class="contextLabel">trier par date</span></li>
     </ul>
 </div>
 

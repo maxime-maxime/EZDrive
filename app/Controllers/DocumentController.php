@@ -41,6 +41,7 @@ class DocumentController
                 'path' => $row['path'],
                 'preview' => $row['preview'],
                 'owner' =>$row['owner'],
+                'favorite' => $row['favorite'],
             ];
         }
         return $documents;
@@ -78,8 +79,10 @@ class DocumentController
         $fileInfo = Document::getById($id);
         $newName=$newName.".".pathinfo($fileInfo['name'], PATHINFO_EXTENSION);
         $path = $fileInfo['path'];
-        $path = dirname($path)."\\".$newName;
-        $newName = implode(".",self::getUniqueName($newName, $fileInfo['folder_id'], $path));
+        $path = dirname($path).'\\';
+        if($path === '.\\') $path = "";
+        echo "path : ".$path;
+        $newName = implode(".",self::getUniqueName($newName, $fileInfo['folder_id']));
         Document::rename($id, $newName,$path);
         return [
             "path" => Document::getById($id)['path'],

@@ -30,7 +30,7 @@ class Folder
         $pdo = Database::getConnection();
 
         // Sous-dossiers
-        $stmtFolder = $pdo->prepare("SELECT id,name, created_at, owner FROM folder WHERE parent_id = :id AND owner = :owner");
+        $stmtFolder = $pdo->prepare("SELECT id,name, created_at, owner, favorite FROM folder WHERE parent_id = :id AND owner = :owner");
         $stmtFolder->execute([
             ":id" => $id,
             ":owner" => $_SESSION['user']['user_id']

@@ -14,7 +14,7 @@ if(isset($_SESSION['user']['user_id'])) {
     $stmt->execute([":id" => $userId]);
     $userData = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($userData['name'] != $_SESSION['user']['name']){
-        header("Location: login.php");
+        header("Location: ../login.php");
         exit; // Arrêter l'exécution après la redirection
     }
 
@@ -53,7 +53,7 @@ else {
     <script src="../../script/drive.js" defer></script>
 </head>
 <body>
-<!-- Header -->
+
 <header class="header">
     <div class="left">
         <div class="logo">EZDrive</div>
@@ -67,7 +67,7 @@ else {
     </div>
 
     <div class="right user-actions">
-        <button class="selectAll"><img src="../../ressources/default/selectAll.png" alt="Tout Sélectionner" /></button>
+        <button class="selectAll"><img src="../../ressources/default/select_all.png" alt="Tout Sélectionner" /></button>
         <button class="create_folder"><img src="../../ressources/default/create_folder.png" alt="Créer" /></button>
         <button class="upload"><img src="../../ressources/default/upload.png" alt="Importer" /></button>
         <button class="download"><img src="../../ressources/default/download.png" alt="Exporter" /></button>
@@ -79,49 +79,46 @@ else {
 
 
 
-<!-- Conteneur principal -->
 <div class="page-container">
-    <!-- Sidebar fixe à gauche -->
     <aside class="sidebar">
         <h3>Types de fichiers</h3>
         <ul>
             <li>
-                <input type="checkbox" id="filter-images" class="filter">
-                <label for="filter-images">Images</label>
+                <input type="checkbox" id="image" class="filter">
+                <label for="image">Images</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-videos" class="filter">
-                <label for="filter-videos">Vidéos</label>
+                <input type="checkbox" id="media" class="filter">
+                <label for="media">Médias</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-documents" class="filter">
-                <label for="filter-documents">Documents</label>
+                <input type="checkbox" id="document" class="filter">
+                <label for="document">Documents</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-audio" class="filter">
-                <label for="filter-audio">Audio</label>
+                <input type="checkbox" id="divers" class="filter">
+                <label for="divers">Divers</label>
             </li>
         </ul>
 
         <h3>Personnalisé</h3>
         <ul>
             <li>
-                <input type="checkbox" id="filter-favorites" class="filter">
-                <label for="filter-favorites">Favoris</label>
+                <input type="checkbox" id="favorite" class="filter">
+                <label for="favorite">Favoris</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-shared" class="filter">
-                <label for="filter-shared">Partagés avec moi</label>
+                <input type="checkbox" id="shared" class="filter">
+                <label for="shared">Partagés</label>
             </li>
             <li>
-                <input type="checkbox" id="filter-recent" class="filter">
-                <label for="filter-recent">Récents</label>
+                <input type="checkbox" id="recent" class="filter">
+                <label for="recent">Récents</label>
             </li>
         </ul>
 
     </aside>
 
-    <!-- Contenu principal -->
     <main class="main-content">
     </main>
 
@@ -165,6 +162,13 @@ else {
         <li class="contextLink" id="delete"><img src="../../ressources/default/delete.png" alt="supprimer" /><span class="contextLabel">supprimer</span></li>
         <li class="contextLink" id="rename"><img src="../../ressources/default/rename.png" alt="renomer" /><span class="contextLabel">renommer</span></li>
         <li class="contextLink" id="setFavorite"><img src="../../ressources/default/favorite.png" alt="favoris" /><span class="contextLabel">favori</span></li>
+    </ul>
+</div>
+
+<div class="context-menu-bis">
+    <ul class="context">
+        <li class="contextLink" id="sort_name" ><img src="../../ressources/default/sort_alphabet.png" alt="asc" /><span class="contextLabel">trier par nom</span></li>
+        <li class="contextLink" id="sort_date"><img src="../../ressources/default/calendar.png" alt="date" /><span class="contextLabel">trier par date</span></li>
     </ul>
 </div>
 

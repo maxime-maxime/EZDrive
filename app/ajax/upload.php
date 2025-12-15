@@ -3,17 +3,20 @@
 session_start();
 require '../Controllers/FolderController.php';
 require '../Controllers/DocumentController.php';
-global $rootPath, $invalidChars, $extToType, $typeToPreview;
+global $rootPath, $invalidChars, $extToType, $typeToPreview, $maxUpmloadSize;
 
 $meta = json_decode($_POST['meta'] ?? '{}', true);
 $file = $_FILES['file'] ?? null;
-print_r($meta);
-print_r($file);
+
 
 
 
 if (!$file || !$meta) {
     echo "Fichier ou métadonnées manquants";
+    exit;
+}
+if($meta["size"] > $maxUpmloadSize){
+    echo "Fichier trop volumineux";
     exit;
 }
 
@@ -98,9 +101,9 @@ else{
         'name' => $newName.'.'.$ext,
         'path' => $rpath,
         'folder_id' => $folderId,
-        'type' => $extToType[$ext] ?? 'document',
+        'type' => $extToType[$ext] ?? 'diver',
         'size' => $meta['size'],
-        'preview' => $typeToPreview[$extToType[$ext] ?? 'document'] ?? 'file.png',
+        'preview' => $typeToPreview[$ext ?? '.xxx'] ?? 'file.png',
         'owner' => $_SESSION['user']['user_id']
     ];
 

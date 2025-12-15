@@ -40,6 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'user_id' => $userData['user_id'],
                     'name' => $username,
                 ];
+
+                $stmt = $pdo->prepare('INSERT INTO folder (name, owner) VALUES (:name, :owner)');
+                $stmt->execute([
+                        'name' => 'root',
+                        'owner' => $userData['user_id']
+                ]);
+
                 header('Location: index.php?folderId=root');
                 exit;
 

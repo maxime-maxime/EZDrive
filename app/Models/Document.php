@@ -7,7 +7,7 @@ class Document
         array $criteria = [],
         bool $getColNames = false,
         bool $getColTypes = false,
-        bool $getTuples = true,        // par défaut on veut tous les tuples
+        bool $getTuples = true,
         string $order = 'id',
         string $orderType = 'ASC',
         int $folderId = null
