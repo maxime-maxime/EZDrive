@@ -100,7 +100,7 @@ class DocumentController
             if($cPath === '' || $cPath === null || $cPath === '.') continue;
             $path .= FolderController::getById($pdo, (int)$cPath)[0]["name"] . "\\";
         }
-        return $path.$name;
+        return $_SESSION['user']['name'].'\\'.$path.$name;
     }
 
     public static function deleteDocuments($pdo, array $ids, array &$paths_to_delete): void{

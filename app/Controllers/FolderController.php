@@ -89,12 +89,12 @@ class FolderController
         return implode('\\',  array_reverse($path));
     }
 
-    public static function createFolder($pdo, int $parentId, string $name, bool $verify = true ): array {
+    public static function createFolder($pdo, string $username, int $parentId, string $name, bool $verify = true ): array {
         global $rootPath;
         $sanitizedName = self::sanitizeFolderName($pdo, $name);
         $uniqueName = $verify ? self::getUniqueFolderName($pdo, $sanitizedName, $parentId) : $sanitizedName;
         $relative =str_replace("\\\\","\\", self::buildFolderPath($pdo, $parentId).'\\'.$uniqueName);
-        $dir = $rootPath . '\\' . self::pathToDir($pdo, $relative);
+        $dir = $rootPath . '\\'.$username.'\\'. self::pathToDir($pdo, $relative);
         $dir = str_replace(["/", "\\\\"], "\\", $dir);
 
         if (!is_dir($dir)) {
@@ -142,7 +142,7 @@ class FolderController
         return Folder::getByPath($pdo, $path);
     }
 
-    public static function createAllFolders($pdo, string $webdir, int $parentId, array &$created)
+    public static function createAllFolders($pdo, string $username, string $webdir, int $parentId, array &$created)
     {
         $parts = explode('/', trim($webdir, '/'));
         array_pop($parts); // retirer le fichier final
@@ -152,7 +152,7 @@ class FolderController
         foreach ($parts as $name) {
             $key = $parentId . '|' . $name;
             if (!isset($created[$key])) {
-                $folderInf = self::createFolder($pdo, $parentId, $name);
+                $folderInf = self::createFolder($pdo, $username, $parentId, $name);
                 $folderId = $folderInf['id'];
                 $created[$key] = $folderId;
             } else {

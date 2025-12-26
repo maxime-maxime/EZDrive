@@ -9,6 +9,7 @@ require '../Database.php';
 global $rootPath, $invalidChars, $easteregg, $defaultFolderName;
 
 $pdo = Database::getConnection();
+$username = $_SESSION['user']['name'];
 
 if(!SecurityController::checkAjax($pdo)){
     exit;
@@ -23,7 +24,7 @@ if ($parentId !== null) {
         OwnerController::addTheme($pdo, $easteregg[$_GET['name']]);
         exit;
     }
-    FolderController::createFolder($pdo, $parentId, $_GET['name'] ?? $defaultFolderName);
+    FolderController::createFolder($pdo, $username, $parentId, $_GET['name'] ?? $defaultFolderName);
 }
 else{
     exit;

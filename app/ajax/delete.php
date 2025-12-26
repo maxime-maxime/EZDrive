@@ -28,7 +28,7 @@ if (!empty($del['folders'])) FolderController::deleteFolders($pdo, $del['folders
 $paths_to_delete = array_unique($paths_to_delete);
 
 foreach ($paths_to_delete as $path) {
-    $delpath = $rootPath . '/' . $path;
+    $delpath = $rootPath .'/'. $_SESSION['user']['name'] . '/' . $path;
     $delpath = str_replace(["\\", "//"], ["/", "/"], $delpath);
 
     if (is_file($delpath)) {

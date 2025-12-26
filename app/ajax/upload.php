@@ -56,6 +56,7 @@ echo'absent token';
 exit;
 }
 
+$username = $_SESSION['user']['name'];
 $path = [];
 $folder = $folderId;
 $currentFolder = FolderController::getById($pdo, $folder)[0];
@@ -71,8 +72,9 @@ $pathWithoutLast = array_reverse(array_slice($path, 0, -1));
 $pathString = !empty($pathWithoutLast) ? implode('/', $pathWithoutLast) : '';
 
 
+echo 'hey';
 if(isset($meta['webdir']) && $meta['webdir'] !== ''){
-    $folderInf = FolderController::createAllFolders($pdo, $meta['webdir'], $folderId, $created);
+    $folderInf = FolderController::createAllFolders($pdo, $username, $meta['webdir'], $folderId, $created);
     $_SESSION['upload']['created_folders'] = $created;
     $folderId = $folderInf['id'];
     $pathString = $folderInf['name'];
@@ -111,7 +113,7 @@ else{
     ];
 
 
-        $dirPath = $rootPath . '/' . $rdir;
+        $dirPath = $rootPath . '/'.$username.'/' . $rdir;
         $dirPath = str_replace(["\\", "//"], ["/", "/"], $dirPath);
         if (!file_exists($dirPath)) {
             if(move_uploaded_file($_FILES['file']['tmp_name'], $dirPath)){
