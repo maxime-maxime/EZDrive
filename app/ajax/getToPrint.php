@@ -2,13 +2,21 @@
 session_start();
 require '../Controllers/FolderController.php';
 require '../Controllers/DocumentController.php';
+require_once '../Controllers/SecurityController.php';
+require_once '../Database.php';
+
+$pdo = Database::getConnection();
+
+if(!SecurityController::checkAjax($pdo)){
+    exit;
+}
 
 $criteria = $_GET ?? null;
 $order = $_GET['order'] ?? 'id';
 $orderType = $_GET['orderType'] ?? 'ASC';
 $folderId = $_GET['folderId'] ?? null;
 if ($folderId == 'root'){
-    $folderId = FolderController::getRoot()['id'];
+    $folderId = FolderController::getRoot($pdo)['id'];
 }
 $filterCriteria = $criteria;
 
@@ -17,9 +25,10 @@ unset($filterCriteria['orderType']);
 unset($filterCriteria['folderId']);
 
 
-$children = FolderController::getFolderWithChildren($folderId)['children']['folders'];
+$children = FolderController::getFolderWithChildren($pdo, $folderId)['children']['folders'];
 
 $filteredDocs = DocumentController::listTuplesToPrint(
+    $pdo,
     criteria: $filterCriteria,
     order: $order,
     orderType: $orderType,

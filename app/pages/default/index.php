@@ -61,7 +61,7 @@ else {
 
     <div class="center">
         <div class="search-bar">
-            <input type="text" placeholder="tapez ici...">
+            <input type="text" id='searchText' placeholder="tapez ici...">
             <button class="search">Rechercher</button>
         </div>
     </div>

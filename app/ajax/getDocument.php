@@ -1,13 +1,19 @@
 <?php
+require '../Controllers/DocumentController.php';
+require_once '../Controllers/SecurityController.php';
+require_once '../Database.php';
 
-require '../models/Document.php'; // ou ton autoloader
+$pdo = Database::getConnection();
 
-$id = $_GET['id'] ?? null; // récupère l'id du document depuis l'URL
+if(!SecurityController::checkAjax($pdo)){
+    exit;
+}
+
+$id = $_GET['id'] ?? null;
 if (!$id) {
-echo json_encode(['error' => 'ID manquant']);
 exit;
 }
 
-$doc = Document::getById($id);
+$doc = DocumentController::getById($pdo, $id);
 $doc = array_filter($doc, fn($value) => $value !== "empty");
 echo json_encode($doc);

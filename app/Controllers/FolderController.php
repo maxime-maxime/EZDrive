@@ -1,24 +1,24 @@
 <?php
-require '../Models/Folder.php';
-require '../Config/config.php';
+require_once '../Models/Folder.php';
+require_once '../Config/config.php';
 class FolderController
 {
     // Récupérer tous les dossiers de l'utilisateur
-    public static function listAll(): array
+    public static function listAll($pdo): array
     {
-        return Folder::getAll();
+        return Folder::getAll($pdo);
     }
 
     // Récupérer le dossier racine de l'utilisateur
-    public static function getRoot(): ?array
+    public static function getRoot($pdo): ?array
     {
-        return Folder::getRoot();
+        return Folder::getRoot($pdo);
     }
 
     // Récupérer un dossier et ses enfants
-    public static function getFolderWithChildren(int $id, bool $getFiles = false): array
+    public static function getFolderWithChildren($pdo, int $id, bool $getFiles = false): array
     {
-        $children = Folder::getChildren($id, $getFiles);
+        $children = Folder::getChildren($pdo, $id, $getFiles);
         return [
             'folder' => $id,
             'children' => $children
@@ -26,37 +26,37 @@ class FolderController
     }
 
     // Créer un nouveau dossier
-    public static function create($data): int
+    public static function create($pdo,$data): int
     {
-        return Folder::insert($data);
+        return Folder::insert($pdo, $data);
     }
 
     // Mettre à jour un dossier existant
-    public static function update(int $id, array $data): void
+    public static function update($pdo, int $id, array $data): void
     {
-        Folder::updateRow($data, $id);
+        Folder::updateRow($pdo, $data, $id);
     }
 
     // Supprimer un dossier
-    public static function deleteRows(int|array $id): void
+    public static function deleteRows($pdo, int|array $id): void
     {
-        Folder::deleteRow($id);
+        Folder::deleteRow($pdo, $id);
     }
 
     // Récupérer uniquement les sous-dossiers et fichiers pour AJAX
 
 
-    public static function getById(int|array $id): array
+    public static function getById($pdo, int|array $id): array
     {
-        return Folder::getById($id);
+        return Folder::getById($pdo, $id);
     }
 
 
-    public static function getParent(int $id):array{
-        return Folder::getParent($id);
+    public static function getParent($pdo, int $id):array{
+        return Folder::getParent($pdo, $id);
     }
 
-    public static function sanitizeFolderName(string $name): string {
+    public static function sanitizeFolderName($pdo, string $name): string {
         global $invalidChars;
         foreach ($invalidChars as $char) {
             if (str_contains($name, $char)) {
@@ -66,9 +66,9 @@ class FolderController
         return $name;
     }
 
-    public static function getUniqueFolderName(string $name, int $parentId): string {
-        $existingNames = array_column(FolderController::getFolderWithChildren($parentId)['children']['folders'], 'name');
-        $newName = self::sanitizeFolderName($name);
+    public static function getUniqueFolderName($pdo, string $name, int $parentId): string {
+        $existingNames = array_column(FolderController::getFolderWithChildren($pdo, $parentId)['children']['folders'], 'name');
+        $newName = self::sanitizeFolderName($pdo, $name);
         $i = 1;
         while (in_array($newName, $existingNames)) {
             $newName = $name . ' (' . $i . ')';
@@ -77,11 +77,11 @@ class FolderController
         return $newName;
     }
 
-    public static function buildFolderPath(int $parentId): string {
+    public static function buildFolderPath($pdo, int $parentId): string {
         $path = [$parentId];
-        $parentId = FolderController::getById($parentId)[0]['parent_id'];
+        $parentId = FolderController::getById($pdo, $parentId)[0]['parent_id'];
         while ($parentId !== null) {
-            $folder = FolderController::getById($parentId)[0];
+            $folder = FolderController::getById($pdo, $parentId)[0];
             $path[] = $parentId;
             $parentId = $folder['parent_id'];
         }
@@ -89,12 +89,12 @@ class FolderController
         return implode('\\',  array_reverse($path));
     }
 
-    public static function createFolder(int $parentId, string $name, bool $verify = true ): array {
+    public static function createFolder($pdo, int $parentId, string $name, bool $verify = true ): array {
         global $rootPath;
-        $sanitizedName = self::sanitizeFolderName($name);
-        $uniqueName = $verify ? self::getUniqueFolderName($sanitizedName, $parentId) : $sanitizedName;
-        $relative =str_replace("\\\\","\\", self::buildFolderPath($parentId).'\\'.$uniqueName);
-        $dir = $rootPath . '\\' . self::pathToDir($relative);
+        $sanitizedName = self::sanitizeFolderName($pdo, $name);
+        $uniqueName = $verify ? self::getUniqueFolderName($pdo, $sanitizedName, $parentId) : $sanitizedName;
+        $relative =str_replace("\\\\","\\", self::buildFolderPath($pdo, $parentId).'\\'.$uniqueName);
+        $dir = $rootPath . '\\' . self::pathToDir($pdo, $relative);
         $dir = str_replace(["/", "\\\\"], "\\", $dir);
 
         if (!is_dir($dir)) {
@@ -108,17 +108,17 @@ class FolderController
                 'parent_id' => $parentId,
                 'path' => $path
             ];
-            FolderController::create($data);
+            FolderController::create($pdo, $data);
 
         }
         else $data=[];
-        return Folder::getByPath($data['path']?? '');
+        return Folder::getByPath($pdo, $data['path']?? '');
     }
 
-    public static function getFoldersToDel(array $folderIds, array $files = [], array $folders = []): array {
+    public static function getFoldersToDel($pdo, array $folderIds, array $files = [], array $folders = []): array {
             foreach ($folderIds as $id) {
 
-                $children = self::getFolderWithChildren($id, getFiles: true)['children'];
+                $children = self::getFolderWithChildren($pdo, $id, getFiles: true)['children'];
 
                 $childFolders = array_column($children['folders'], 'id');
                 $childFiles   = array_column($children['files'], 'id');
@@ -127,7 +127,7 @@ class FolderController
                 $files   = array_merge($files, $childFiles);
 
                 if (!empty($childFolders)) {
-                    $result = self::getFoldersToDel($childFolders, $files, $folders);
+                    $result = self::getFoldersToDel($pdo, $childFolders, $files, $folders);
                     $files   = $result['files'];
                     $folders = $result['folders'];
                 }
@@ -137,12 +137,12 @@ class FolderController
                 'folders' => array_values(array_unique($folders)),
             ];
         }
-    public static function getByPath(string $path): array
+    public static function getByPath($pdo, string $path): array
     {
-        return Folder::getByPath($path);
+        return Folder::getByPath($pdo, $path);
     }
 
-    public static function createAllFolders(string $webdir, int $parentId, array &$created)
+    public static function createAllFolders($pdo, string $webdir, int $parentId, array &$created)
     {
         $parts = explode('/', trim($webdir, '/'));
         array_pop($parts); // retirer le fichier final
@@ -152,29 +152,29 @@ class FolderController
         foreach ($parts as $name) {
             $key = $parentId . '|' . $name;
             if (!isset($created[$key])) {
-                $folderInf = self::createFolder($parentId, $name);
+                $folderInf = self::createFolder($pdo, $parentId, $name);
                 $folderId = $folderInf['id'];
                 $created[$key] = $folderId;
             } else {
                 $folderId = $created[$key];
-                $folderInf = Folder::getByKey($parentId, $name)[0];
+                $folderInf = Folder::getByKey($pdo, $parentId, $name)[0];
             }
             $parentId = $folderId;
         }
         return $folderInf;
     }
 
-    public static function togleFavorite(int $id): void
+    public static function togleFavorite($pdo, int $id): void
     {
-        Folder::togleFavorite($id);
+        Folder::togleFavorite($pdo, $id);
     }
 
-    public static function rename(int $id, string $name, int $parentId) :array
+    public static function rename($pdo, int $id, string $name, int $parentId) :array
     {
-        $previousName = Folder::getById($id)[0]['name'];
-        $newName = self::getUniqueFolderName($name, $parentId);
-        Folder::rename($id, $newName);
-        $path = self::pathToDir(Folder::getById($id)[0]['path']);
+        $previousName = Folder::getById($pdo, $id)[0]['name'];
+        $newName = self::getUniqueFolderName($pdo, $name, $parentId);
+        Folder::rename($pdo, $id, $newName);
+        $path = self::pathToDir($pdo, Folder::getById($pdo, $id)[0]['path']);
 
         return [
             'path' => $path,
@@ -184,16 +184,45 @@ class FolderController
     }
 
 
-        public static function pathToDir($p) :string{
+        public static function pathToDir($pdo, $p) :string{
             $name = basename($p);
             $oldPath = explode('\\',dirname($p));
             $path='';
             foreach ($oldPath as $cPath) {
                 if($cPath === '' || $cPath === null || $cPath === '.') continue;
-                $path .= FolderController::getById((int)$cPath)[0]["name"] . "\\";
+                $path .= FolderController::getById($pdo, (int)$cPath)[0]["name"] . "\\";
             }
             return $path.$name;
         }
+
+        public static function deleteFolders($pdo, array $ids, array &$paths_to_delete): void{
+
+            $folders_info = FolderController::getById($pdo, $ids);
+
+            foreach ($folders_info as $folder_info) {
+                $paths_to_delete[] = self::pathToDir($pdo, $folder_info['path']);
+            }
+
+            self::deleteRows($pdo, $ids);
+        }
+
+    public static function search($pdo, string $search): array {
+        $ids = Folder::search($pdo, $search);
+        if (empty($ids)) {
+            return []; 
+        }
+        $resp = self::getById($pdo, $ids);
+        foreach ($resp as $row) {
+            $folders[] = [
+                'id' => $row['id'],
+                'name' => $row['name'],
+                'path' => $row['path'],
+                'owner' =>$row['owner'],
+                'favorite' => $row['favorite'],
+            ];
+        }
+        return $folders;
+    }
 }
 
 

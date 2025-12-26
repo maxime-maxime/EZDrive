@@ -2,26 +2,29 @@
 session_start();
 require_once '../Controllers/DocumentController.php';
 require_once '../Controllers/FolderController.php';
-require_once '../Config/config.php';
+require_once '../Controllers/SecurityController.php';
+require_once '../Database.php';
+
 global $rootPath;
 
-// Vérifier si au moins un des tableaux de données est présent dans l'URL
+$pdo = Database::getConnection();
+
+if(!SecurityController::checkAjax($pdo)){
+    exit;
+}
+
 if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']) ) {
 
-    $parentId = isset($_GET['parent_id']) ? $_GET['parent_id'] : 'root';
-    if($parentId === 'root')$parentId = FolderController::getRoot()['id'];
-
+    $parentId = $_GET['parent_id'] ?? FolderController::getRoot($pdo)['id'];
 
     $files = json_decode($_GET['files'], true);
-    echo('files : ');
-    print_r($files);
 
     if (is_array($files)) {
         foreach ($files as $id => $name) {
             $file_id = (int)$id;
             if ($file_id > 0 && !empty($name)) {
-                $file = DocumentController::rename($file_id, $name);
-                $filePath = DocumentController::pathToDir($file['path']);
+                $file = DocumentController::rename($pdo, $file_id, $name);
+                $filePath = DocumentController::pathToDir($pdo, $file['path']);
                 $previousName = $file['previousName'];
                 $newName = $file['name'];
                 $path = dirname($filePath) != '.' ? dirname($filePath) : '';
@@ -29,8 +32,6 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 $oldpath =  str_replace("/", "\\", $oldpath);
                 $newpath = $rootPath .'\\'. $path.'\\'.$newName;
                 $newpath =  str_replace("/", "\\", $newpath);
-                echo 'old path : '.$oldpath;
-                echo 'new path : '.$newpath;
                 rename( $oldpath,  $newpath);}
         }
     }
@@ -43,7 +44,7 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
             $folder_id = (int)$id;
 
             if ($folder_id > 0 && !empty($newName)) {
-                $folder = FolderController::rename($folder_id, $newName, $parentId);
+                $folder = FolderController::rename($pdo,(int) $folder_id, $newName, (int) $parentId);
                 $previousName = $folder['previousName'];
                 $newName = $folder['name'];
                 $path = dirname($folder['path']) != '.' ? dirname($folder['path']):'';
@@ -51,10 +52,6 @@ if (isset($_GET['folders']) || isset($_GET['files']) || isset($_GET['parent_id']
                 $newpath = $rootPath ."\\". $path.'\\'.$newName;
                 $oldpath =  str_replace(["/",'\\\\'], "\\", $oldpath);
                 $newpath =  str_replace(["/",'\\\\'], "\\", $newpath);
-                echo 'old path : '.$oldpath;
-                echo 'new path : '.$newpath;
-                echo 'previous name : '.$previousName;
-                echo '  new name : '.$newName;
                 rename( $oldpath,  $newpath);
             }
         }

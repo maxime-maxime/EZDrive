@@ -2,6 +2,14 @@
 session_start();
 require_once '../Controllers/DocumentController.php';
 require_once '../Controllers/FolderController.php';
+require_once '../Controllers/SecurityController.php';
+require_once '../Database.php';
+
+$pdo = Database::getConnection();
+
+if(!SecurityController::checkAjax($pdo)){
+    exit;
+}
 
 if (isset($_GET['folders']) && isset($_GET['files'])) {
     $folders = $_GET['folders'] !== '' ? explode(',', $_GET['folders']) : [];
@@ -11,14 +19,14 @@ if (isset($_GET['folders']) && isset($_GET['files'])) {
         $id = (int)$id;
         if ($id > 0) {
 
-            FolderController::togleFavorite($id);
+            FolderController::togleFavorite($pdo, $id);
         }
     }
 
     foreach ($files as $id) {
         $id = (int)$id;
         if ($id > 0) {
-            DocumentController::togleFavorite($id);
+            DocumentController::togleFavorite($pdo, $id);
         }
     }
 

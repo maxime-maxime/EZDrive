@@ -3,20 +3,21 @@
 class Folder
 {
     // Récupérer tous les dossiers de l'utilisateur
-    public static function getAll(): array {
-        $pdo = Database::getConnection();
+    public static function getAll($pdo): array {
+
         $stmt = $pdo->prepare("SELECT * FROM folder WHERE owner = :owner");
         $stmt->execute([":owner" => $_SESSION['user']['user_id']]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Récupérer un dossier par ID
-    public static function getById(int|array $ids): array|false
-    {   $pdo = Database::getConnection();
+    public static function getById($pdo, int|array $ids): array|false
+    {
+        if (empty($ids)) {
+        return []; 
+    }
         $ids = (array)$ids;
-
         $in = implode(',', array_fill(0, count($ids), '?'));
-
         $stmt = $pdo->prepare("SELECT * FROM folder WHERE id IN ($in) AND owner = ?");
         $stmt->execute([...$ids, $_SESSION['user']['user_id']]);
         $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -26,10 +27,8 @@ class Folder
 
 
     // Récupérer enfants (sous-dossiers + documents)
-    public static function getChildren(int $id, bool $getFiles = false): array {
-        $pdo = Database::getConnection();
+    public static function getChildren($pdo, int $id, bool $getFiles = false): array {
 
-        // Sous-dossiers
         $stmtFolder = $pdo->prepare("SELECT id,name, created_at, owner, favorite FROM folder WHERE parent_id = :id AND owner = :owner");
         $stmtFolder->execute([
             ":id" => $id,
@@ -52,8 +51,7 @@ class Folder
     }
 
     // Insertion sécurisée
-    public static function insert($data): int {
-        $pdo = Database::getConnection();
+    public static function insert($pdo, $data): int {
         $data['owner'] = $_SESSION['user']['user_id'];
         $columns = array_keys($data);
         $placeholders = array_map(fn($c) => ":$c", $columns);
@@ -64,8 +62,7 @@ class Folder
     }
 
     // Mise à jour sécurisée
-    public static function updateRow(array $tuple, int $id): void {
-        $pdo = Database::getConnection();
+    public static function updateRow($pdo, array $tuple, int $id): void {
 
         $stmt = $pdo->prepare("SELECT owner FROM folder WHERE id = :id");
         $stmt->execute([":id" => $id]);
@@ -91,9 +88,8 @@ class Folder
     }
 
     // Suppression sécurisée
-    public static function deleteRow(array|int $ids): void
+    public static function deleteRow($pdo, array|int $ids): void
     {
-        $pdo = Database::getConnection();
         $ids = (array)$ids;
 
         // Vérifie propriété
@@ -106,16 +102,14 @@ class Folder
         $stmt->execute($ids);
     }
 
-    public static function getRoot(): ?array {
-        $pdo = Database::getConnection();
+    public static function getRoot($pdo): ?array {
         $stmt = $pdo->prepare("SELECT * FROM folder WHERE owner = :owner AND parent_id IS NULL");
         $stmt->execute([":owner" => $_SESSION['user']['user_id']]);
         $root = $stmt->fetch(PDO::FETCH_ASSOC);
         return $root ?: null;
     }
 
-    public static function getParent($id, $share = false): ?array {
-        $pdo = Database::getConnection();
+    public static function getParent($pdo, $id, $share = false): ?array {
         $stmt = $pdo->prepare("SELECT name, id FROM folder WHERE parent_id = :parent_id AND owner = :owner");
         if($share){
             $stmt = $pdo->prepare("SELECT name, id FROM folder WHERE parent_id = :parent_id AND share = :share");
@@ -125,8 +119,8 @@ class Folder
         return $root ?: null;
     }
 
-    public static function getByPath(string $path): array {
-        $pdo = Database::getConnection();
+    public static function getByPath($pdo, string $path): array {
+
         $stmt = $pdo->prepare("SELECT * FROM folder WHERE path = :path AND owner = :owner");
         $stmt->execute([
             ":path" => $path,
@@ -135,9 +129,8 @@ class Folder
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function togleFavorite(int $id): void
+    public static function togleFavorite($pdo, int $id): void
     {
-        $pdo = Database::getConnection();
         $stmt = $pdo->prepare("SELECT favorite FROM folder WHERE id = :id AND owner = :owner");
         $stmt->execute([":id" => $id,
             ":owner" => $_SESSION['user']['user_id']]);
@@ -149,10 +142,9 @@ class Folder
             ":id" => $id
         ]);
     }
-    public static function rename(int $id, string $newName ):void{
-        $path = Folder::getById($id)[0]['path'];
+    public static function rename($pdo, int $id, string $newName ):void{
+        $path = Folder::getById($pdo, $id)[0]['path'];
         $path = dirname($path) != '.' ? dirname($path).'\\'.$newName : $newName;
-        $pdo = Database::getConnection();
         $stmt = $pdo->prepare("UPDATE folder SET name = :newname, path = :path WHERE id = :id AND owner = :owner");
         $stmt->execute([
             ":newname" => $newName,
@@ -162,9 +154,8 @@ class Folder
         ]);
     }
 
-    public static function getByKey(int $parentId, string $name): array|false
-    {   $pdo = Database::getConnection();
-
+    public static function getByKey($pdo, int $parentId, string $name): array|false
+    {
         $stmt = $pdo->prepare("SELECT * FROM folder WHERE parent_id = :parentId AND name = :name AND owner = :owner");
         $stmt->execute([":owner" => $_SESSION['user']['user_id'],
             ":parentId" => $parentId,
@@ -172,5 +163,23 @@ class Folder
         $folders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $folders ?: [];
+    }
+
+    
+    public static function search($pdo, ?string $search): array
+    {
+
+        $sql = "SELECT id FROM folder WHERE name LIKE :search AND owner = :owner";
+        
+        $stmt = $pdo->prepare($sql);
+        
+        $searchTerm = "%" . ($search ?? "") . "%";
+        
+        $stmt->execute([
+            ":search" => $searchTerm,
+            ":owner"  => $_SESSION['user']['user_id']
+        ]);
+
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'id');
     }
 }

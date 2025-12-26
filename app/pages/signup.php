@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hashedpsw = password_hash($password, PASSWORD_DEFAULT);
 
 
-            $stmt = $pdo->prepare("INSERT INTO user (name, psw)  VALUES (:name, :hashedpsw)");
+            $stmt = $pdo->prepare("INSERT INTO user (name, psw, themes)  VALUES (:name, :hashedpsw, '[]')");
 
             $stmt->execute([
                 'name' => $username,

@@ -68,7 +68,7 @@ else {
 
     <div class="center">
         <div class="search-bar">
-            <input type="text" placeholder="en vous souhaitant un joyeux noel...">
+            <input type="text" placeholder="Xena ma belle ! <3">
             <button class="search">Rechercher</button>
         </div>
     </div>

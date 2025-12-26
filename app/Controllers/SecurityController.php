@@ -1,4 +1,7 @@
 <?php
+require_once 'OwnerController.php';
+require_once '../Config/config.php';
+
 Class SecurityController{
     public static function isIpAllowed($ip, $username) : string|null{
      $pdo = Database::getConnection();
@@ -39,5 +42,20 @@ Class SecurityController{
         $pdo = Database::getConnection();
         $stmt = $pdo->prepare('DELETE FROM loggins_attempts WHERE ip = :ip AND user_id = :user_id');
         $stmt->execute([":ip" => $ip, ":user_id" => $username]);
+    }
+
+    public static function checkAjax($pdo,$methode = ['GET'],$token = false):bool{
+        if(!isset($_SESSION['user']['user_id'])){
+            ownerController::logout($pdo);
+            return false;
+        }
+
+
+        if (!in_array($_SERVER['REQUEST_METHOD'],$methode)){
+            ownerController::logout($pdo);
+            return false;
+        }
+    return true;
+
     }
 }

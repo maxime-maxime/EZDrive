@@ -3,21 +3,30 @@ session_start();
 require '../Controllers/FolderController.php';
 require '../Controllers/DocumentController.php';
 require '../Controllers/OwnerController.php';
-require '../Config/config.php';
-global $rootPath, $invalidChars, $easteregg;
+require '../Controllers/SecurityController.php';
+require '../Database.php';
+
+global $rootPath, $invalidChars, $easteregg, $defaultFolderName;
+
+$pdo = Database::getConnection();
+
+if(!SecurityController::checkAjax($pdo)){
+    exit;
+}
 
 $parentId = isset($_GET['parentId']) && $_GET['parentId'] === 'root'
-    ? FolderController::getRoot()['id']
+    ? FolderController::getRoot($pdo)['id']
     : ($_GET['parentId'] ?? null);
 
 if ($parentId !== null) {
-    print_r($easteregg);
     if(array_key_exists($_GET['name'] ,$easteregg)){
-        echo $_GET['name'];
-        OwnerController::addTheme($easteregg[$_GET['name']]);
+        OwnerController::addTheme($pdo, $easteregg[$_GET['name']]);
         exit;
     }
-    FolderController::createFolder($parentId, $_GET['name'] ?? 'coucou');
+    FolderController::createFolder($pdo, $parentId, $_GET['name'] ?? $defaultFolderName);
+}
+else{
+    exit;
 }
 
 

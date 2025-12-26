@@ -18,7 +18,6 @@ $extToType = [
     'mp4'  => 'media', 'mkv'  => 'media', 'avi'  => 'media', 'mov'  => 'media',
     'wmv'  => 'media', 'flv'  => 'media', 'webm' => 'media', 'mpeg' => 'media',
     'mpg'  => 'media', 'm4v'  => 'media', '3gp'  => 'media', 'vob'  => 'media',
-    'ts'   => 'media',
 
     // --- 3. document (Documents, Code, Data, Polices) ---
     // Documents
@@ -90,6 +89,7 @@ $typeToPreview = [
     'rb'    => 'code.png',
     'go'    => 'code.png',
     'rs'    => 'code.png',
+    'ipynb' => 'code.png',
     'swift' => 'code.png',
     'kt'    => 'code.png',
     'sh'    => 'code.png', // Script Shell
@@ -228,9 +228,11 @@ $rootPath = 'C:\wamp64\www\EZDrive\bdd\content';
 
 $invalidChars = ['/', '\\', '?', '%', '*', ':', '|', '"', '<', '>', "\0", "\n", "\r","."];
 
-$maxUpmloadSize = 255000000;
+$maxUploadSize = 255000000;
 
 $easteregg = array(
     'pornDrive' => "xxx",
     'sobre' => "sobre"
 );
+
+$defaultFolderName = "folder";

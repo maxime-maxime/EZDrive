@@ -760,3 +760,59 @@ label:active {
     border-top : rgba(144, 30, 189, 0.43) 2px solid;
     border-radius: 30px;
 }
+
+
+/* ====================================================================
+   @MEDIA QUERIES (Écrans de moins de 768px)
+   ==================================================================== */
+@media (max-width: 768px) {
+    /* --- 1. Header --- */
+    :root {
+        --header-height: 60px; /* Réduire la hauteur */
+    }
+    .header {
+        height: var(--header-height);
+        padding: 0 15px; /* Moins de padding */
+    }
+    .header .logo {
+        font-size: 2rem; /* Réduire la taille du logo */
+    }
+    .header .search-bar {
+        /* Cacher la barre de recherche ou la déplacer/réduire */
+        display: none;
+    }
+    /* Boutons : Afficher uniquement l'icône du menu Hamburger et des actions clés */
+    .header .right button.profil,
+    .header .right button.logout {
+        display: none; /* Cacher le texte 'profil' et 'logout' */
+    }
+    .header .right button.menu-toggle {
+        display: flex; /* Afficher un bouton pour la Sidebar (Hamburger) */
+    }
+
+    /* --- 2. Sidebar (Cachée par défaut) --- */
+    .sidebar {
+        top: var(--header-height);
+        left: -100%; /* Décalé hors écran */
+        width: 100%;
+        transition: left 0.35s;
+    }
+    /* Classe JS pour afficher la sidebar */
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* --- 3. Main Content --- */
+    .main-content {
+        margin-top: var(--header-height);
+        margin-left: 0; /* Ne pas décaler pour la sidebar */
+        /* Ajuster la grille si nécessaire, mais auto-fit devrait suffire */
+        padding: 15px;
+        grid-auto-rows: 110px; /* Légère réduction de la hauteur si besoin */
+    }
+
+    /* --- 4. Modales --- */
+    .popup {
+        width: 95%;
+    }
+}
